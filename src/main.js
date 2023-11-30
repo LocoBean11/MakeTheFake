@@ -27,12 +27,13 @@ scene: [ Title, Play ]
 let game = new Phaser.Game(config);
 
 // define globals
-/*const textSpacer = 64;
-let p1Tooth = null;
+const textSpacer = 64;
+let DigChampsP1 = null;
+
 let highScore;
 let newHighScore = false;
 //let cursors;
-*/
+
 // set UI sizes
 let borderUISize = game.config.height / 15;
 let borderPadding = borderUISize / 3;

@@ -20,7 +20,7 @@ physics: {
         }
     }
 },
-scene: [ Title, Play ]
+scene: [ Play ]
 }
 
     //define game

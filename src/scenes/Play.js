@@ -25,6 +25,7 @@ class Play extends Phaser.Scene{
         this.DigChampsP1 = this.physics.add.sprite(game.config.width /7, game.config.height /2 - borderUISize - borderPadding, 'shovel').setOrigin(0.5, 0);
         this.DigChampsP1.setScale(0.8);
 
+         //Empty space
         this.emptyspaceBottom = this.add.tileSprite(0, 376, 640, 64, 'emptyspace').setOrigin(0, 0);
 
         //Define keys

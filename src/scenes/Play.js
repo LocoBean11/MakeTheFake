@@ -42,11 +42,13 @@ class Play extends Phaser.Scene{
     
             //Create Player
             this.DigChampsP1 = this.physics.add.sprite(game.config.width / 7, game.config.height / 1.9 - borderUISize - borderPadding, 'shovel').setOrigin(0.5, 0);
+            this.DigChampsP1.setBounce(0.2); // our player will bounce from items
             this.DigChampsP1.setScale(0.8);
 
-            // set the boundaries of our game world
+            // Set the boundaries of our game world
             this.physics.world.bounds.width = this.DCGroundCollision.width;
             this.physics.world.bounds.height = this.DCGroundCollision.height;
+
             // Add a collider between player and ground
             this.physics.add.collider(this.DigChampsP1, this.DCGroundCollision); 
 
@@ -103,10 +105,10 @@ class Play extends Phaser.Scene{
       ).setOrigin(0, 0);
 */
         //Define keys
-        keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        /*keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-
+        */
         //Initialize the score
         this.p1Score = 0;
 
@@ -131,17 +133,24 @@ class Play extends Phaser.Scene{
 
         // Game Over flag
         this.gameOver = false;
-/*
-    //camera
-    this.cameras.main.setBounds(0, 0, game.config.width, game.config.height);
-    this.cameras.main.startFollow(this.DigChampsP1, true, 0.25, 0.25);
-    this.physics.world.setBounds(0, 0, game.config.width, game.config.height);
-*/
+
+    this.cursors = this.input.keyboard.createCursorKeys();
     }//End of create
         
 
     update(){
-        
+        if (this.cursors.left.isDown) // if the left arrow key is down
+    {
+        this.DigChampsP1.setVelocityX(-200); // move left
+    }
+    else if (this.cursors.right.isDown) // if the right arrow key is down
+    {
+        this.DigChampsP1.setVelocityX(200); // move right
+    }
+    if ((this.cursors.space.isDown || this.cursors.up.isDown))
+    {
+        this.DigChampsP1.setVelocityY(-300); // jump up
+    }
 
         /*
     // Check for collisions between player and snail
@@ -156,29 +165,8 @@ class Play extends Phaser.Scene{
     
     this.backgroundMusic.stop();
     }//end of if statement
+    */
         
-    // Jumping logic
-    if (Phaser.Input.Keyboard.JustDown(keyUP) && this.DigChampsP1.body.onFloor()) {
-        this.DigChampsP1.setVelocityY(-500);
-    }*/
-    // Play walking animation when moving left
-    if (keyLEFT.isDown && !this.checkCollision(this.DigChampsP1, this.DCGroundCollision)) {
-        this.DigChampsP1.setVelocityX(-300);
-        
-
-    } 
-    // Play walking animation when moving right
-    else if (keyRIGHT.isDown && !this.checkCollision(this.DigChampsP1, this.DCGroundCollision)) {
-        this.DigChampsP1.setVelocityX(300);
-        
-    } 
-    // Stop the player sprite if neither LEFT nor RIGHT key is pressed
-    else {
-        this.DigChampsP1.setVelocityX(0);
-        this.DigChampsP1.anims.stop('walk');
-        this.DigChampsP1.setFrame(0); // Set the sprite frame to the first frame
-    }
-
         this.DigChampsP1.update();
         this.Snail.update();
 

@@ -3,7 +3,7 @@ class Player1 extends Phaser.GameObjects.Sprites{
         super(scene, x, y, texture, frame);
         scene.add.existing(this);
         
-        this.moveSpeed = 8; //pixels per frame
+        this.moveSpeed = 10; //pixels per frame
     }
 
     update(){

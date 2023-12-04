@@ -23,7 +23,8 @@ scene: [ Play ]
 }
 
     //define game
-let game = new Phaser.Game(config);
+    const game = new Phaser.Game(config);
+    //let game = new Phaser.Game(config);
 
 // define globals
 const textSpacer = 64;

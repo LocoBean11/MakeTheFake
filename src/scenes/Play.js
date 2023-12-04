@@ -45,6 +45,7 @@ class Play extends Phaser.Scene{
             this.DigChampsP1.setScale(0.8);
             // Add a collider between player and ground
             this.physics.add.collider(this.DigChampsP1, this.DCGroundCollision); 
+            this.physics.world.enable(this.DigChampsP1);
 
             // Set the boundaries of our game world
             //this.physics.world.setBounds = (0, 0, this.DCGroundCollision.width, this.DCGroundCollision.width.height);
@@ -70,7 +71,7 @@ class Play extends Phaser.Scene{
             duration: 2000, // Adjust the duration as needed
             ease: 'Linear',
             onComplete: function () {
-                // Remove the intro image when the fade-out is complete
+                // Remove the text image when the fade-out is complete
                 this.P1StartText.destroy();
             },
             callbackScope: this
@@ -139,17 +140,22 @@ class Play extends Phaser.Scene{
     update(){
         console.log(this.cursors.left.isDown, this.cursors.right.isDown);
 
-        if (this.cursors.left.isDown) // if the left arrow key is down
-    {
-        this.DigChampsP1.body.setVelocityX(-200); // move left
+    if (this.cursors.left.isDown) { // if the left arrow key is down
+        console.log('Setting velocityX:', -200);
+        this.DigChampsP1.setVelocityX(-200); // move left
     }
-    else if (this.cursors.right.isDown) // if the right arrow key is down
-    {
-        this.DigChampsP1.body.setVelocityX(200); // move right
+    else if (this.cursors.right.isDown){ // if the right arrow key is down
+        console.log('Setting velocityX:', 200);
+        this.DigChampsP1.setVelocityX(200); // move right
     }
-    if ((this.cursors.space.isDown || this.cursors.up.isDown && this.DigChampsP1.body.onFloor))
+    else {
+        // Reset velocity when no key is pressed
+        this.DigChampsP1.setVelocityX(0);
+    }
+
+    if ((this.cursors.space.isDown || this.cursors.up.isDown && this.DigChampsP1.body.onFloor()))
     {
-        this.DigChampsP1.body.setVelocityY(-300); // jump up
+        this.DigChampsP1.setVelocityY(-300); // jump up
     }
 
         /*

@@ -4,7 +4,7 @@
 
 
 let config = {
-    type: Phaser.CANVAS,
+    type: Phaser.AUTO,
     width: 640,
     height: 480,
     scale: {
@@ -13,11 +13,10 @@ let config = {
 physics: {
     default: 'arcade',
     arcade: {
-        //debug: true,
         gravity: {
-            x: 0,
-            y: 0
-        }
+            y: 500
+        },
+        debug: false
     }
 },
 scene: [ Play ]

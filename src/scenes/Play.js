@@ -30,44 +30,43 @@ class Play extends Phaser.Scene{
     create() {
             //Background
             this.DigChampsBackgroundV2 = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0);
-            //this.backgroundSpeed = 4;
 
             // Set the scale to fit the bounding box
             this.DigChampsBackgroundV2.setScale(game.config.width / this.DigChampsBackgroundV2.width, game.config.height / this.DigChampsBackgroundV2.height);
         
-            this.physics.world.setBounds(0, 0, game.config.width, game.config.height);
+            //this.physics.world.setBounds(0, 0, game.config.width, game.config.height);
 
             //Empty space for ground collision, currently under the actual ground
-            this.DCGroundCollision = this.add.tileSprite(0, 0, 640, 400, 'ground').setOrigin(0, 0);
+            this.DCGroundCollision = this.add.tileSprite(0, 0, 640, 360, 'ground').setOrigin(0, 0); //360 is the height
     
             //Create Player
             this.DigChampsP1 = this.physics.add.sprite(game.config.width / 7, game.config.height / 1.9 - borderUISize - borderPadding, 'shovel').setOrigin(0.5, 0);
-            this.DigChampsP1.setBounce(0.2); // our player will bounce from items
+            //this.DigChampsP1.setBounce(0.2); // our player will bounce from items
             this.DigChampsP1.setScale(0.8);
-
-            // Set the boundaries of our game world
-            this.physics.world.bounds.width = this.DCGroundCollision.width;
-            this.physics.world.bounds.height = this.DCGroundCollision.height;
-
             // Add a collider between player and ground
             this.physics.add.collider(this.DigChampsP1, this.DCGroundCollision); 
+
+            // Set the boundaries of our game world
+            //this.physics.world.setBounds = (0, 0, this.DCGroundCollision.width, this.DCGroundCollision.width.height);
+            this.physics.world.bounds.width = this.DCGroundCollision.width;
+           this.physics.world.bounds.height = this.DCGroundCollision.height;
+
+            
 
             //Create enemy
             this.Snail = this.physics.add.sprite(game.config.width / 1.5, game.config.height / 1.58 - borderUISize - borderPadding, 'snail').setOrigin(0.5, 0);
             this.Snail.setScale(0.8);
-
             // Add a collider between enemy and ground
             this.physics.add.collider(this.Snail, this.DCGroundCollision); 
 
-
-            // Add Start Text
-        /*this.P1StartText = this.add.P1StartText(game.config.width / 2, game.config.height / 2, 'starttext');
+            // Add Player 1 Start Text
+        this.P1StartText = this.add.sprite(game.config.width / 2, game.config.height / 2, 'starttext');
         this.P1StartText.setAlpha(1); // Set initial alpha to fully visible
 
         // Create a tween to fade out the intro image
         this.tweens.add({
             targets: this.P1StartText,
-            alpha: 0,
+            alpha: 1,
             duration: 2000, // Adjust the duration as needed
             ease: 'Linear',
             onComplete: function () {
@@ -76,23 +75,21 @@ class Play extends Phaser.Scene{
             },
             callbackScope: this
         });
-*/
+        //End of Start text
 
         //Set up other properties for the player
         this.DigChampsP1.setCollideWorldBounds(true);
-        this.DigChampsP1.setBounce(0.5);
+        //this.DigChampsP1.setBounce(0.5);
         this.DigChampsP1.setImmovable();
         this.DigChampsP1.setMaxVelocity(0, 600);
         this.DigChampsP1.setDragX(200);
         this.DigChampsP1.setDragY(200);
 
         
-    // Create colliders between the player, food and borders
+    // Create colliders between the player
         this.physics.add.collider(this.DigChampsP1, this.Snail, this.handleCollision, null, this);
         this.physics.add.collider(this.DigChampsP1, this.DCGroundCollision, this.handleCollision, null, this);
 
-
-        
     // Randomly spawn enemies on the right side
     /*this.Snail = new Snail(
         this,
@@ -135,21 +132,24 @@ class Play extends Phaser.Scene{
         this.gameOver = false;
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    }//End of create
+
+    }//End of create method
         
 
     update(){
+        console.log(this.cursors.left.isDown, this.cursors.right.isDown);
+
         if (this.cursors.left.isDown) // if the left arrow key is down
     {
-        this.DigChampsP1.setVelocityX(-200); // move left
+        this.DigChampsP1.body.setVelocityX(-200); // move left
     }
     else if (this.cursors.right.isDown) // if the right arrow key is down
     {
-        this.DigChampsP1.setVelocityX(200); // move right
+        this.DigChampsP1.body.setVelocityX(200); // move right
     }
-    if ((this.cursors.space.isDown || this.cursors.up.isDown))
+    if ((this.cursors.space.isDown || this.cursors.up.isDown && this.DigChampsP1.body.onFloor))
     {
-        this.DigChampsP1.setVelocityY(-300); // jump up
+        this.DigChampsP1.body.setVelocityY(-300); // jump up
     }
 
         /*

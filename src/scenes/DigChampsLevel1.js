@@ -1,9 +1,20 @@
-class Play extends Phaser.Scene{
+class DigChampsLevel1 extends Phaser.Scene{
     constructor() {
-        super('playScene');
+        super('digchampslevel1Scene');
     }
 
     preload() {
+        this.load.path = './assets/'
+        this.load.spritesheet('shovel', 'DigChampsP1Walk.png', {
+            frameWidth: 16,
+            frameHeight: 16
+        })
+
+        this.load.image('digchampsbackgroundv2Image', 'DigChampsBackgroundV2.png');
+        this.load.tilemapTiledJSON('digchampslevel1JSON', 'DigChampsLevel1.json')
+
+
+        /*
         //Sprites and backgrounds
         this.load.image('background', './assets/DigChampsBackgroundV2.png');
         this.load.image('shovel', './assets/DigChampsP1.png');
@@ -11,9 +22,9 @@ class Play extends Phaser.Scene{
         //this.load.image('emptyspace', './assets/emptyspace.png');
         this.load.image('ground', './assets/DCGroundCollision.png');
         this.load.image('starttext', './assets/P1StartText.png');
-       
+       */
        //Sprite sheet
-       this.load.spritesheet('walk', './assets/DigChampsP1Walk.png', {frameWidth: 300, frameHeight: 300, startFrame: 0, endFrame: 3});
+       //this.load.spritesheet('walk', './assets/DigChampsP1Walk.png', {frameWidth: 300, frameHeight: 300, startFrame: 0, endFrame: 3});
        /* this.load.path = './assets/'
         this.load.spritesheet('walk', 'DigChampsP1Walk.png', {
             frameWidth: 16,
@@ -28,6 +39,19 @@ class Play extends Phaser.Scene{
     }
 
     create() {
+
+        //velocity constant
+        this.VEL = 100;
+
+        //tilemap info
+        const map = this.add.tilemap('digchampslevel1JSON');
+        const tileset = map.addTileSetImage('DigChampsBackgroundV2', 'digchampsbackgroundv2Image' );
+
+        const bgLayer = map.createLayer('Background', tileset, 0, 0);
+        const groundLayer = map.createLayer('Ground', tileset, 0, 0);
+
+
+        /*
             //Background
             this.DigChampsBackgroundV2 = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0);
 
@@ -92,7 +116,7 @@ class Play extends Phaser.Scene{
         this.physics.add.collider(this.DigChampsP1, this.DCGroundCollision, this.handleCollision, null, this);
 
     // Randomly spawn enemies on the right side
-    /*this.Snail = new Snail(
+    this.Snail = new Snail(
         this,
         game.config.width + borderUISize * 6,
         Phaser.Math.Between(this.minY, this.maxY),
@@ -101,12 +125,12 @@ class Play extends Phaser.Scene{
         this.minY,
         this.maxY
       ).setOrigin(0, 0);
-*/
+
         //Define keys
         /*keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        */
+        
         //Initialize the score
         this.p1Score = 0;
 
@@ -133,11 +157,12 @@ class Play extends Phaser.Scene{
         this.gameOver = false;
 
     this.cursors = this.input.keyboard.createCursorKeys();
-
+*/
     }//End of create method
         
 
     update(){
+        /*
         console.log(this.cursors.left.isDown, this.cursors.right.isDown);
 
     if (this.cursors.left.isDown) { // if the left arrow key is down
@@ -171,12 +196,12 @@ class Play extends Phaser.Scene{
     
     this.backgroundMusic.stop();
     }//end of if statement
-    */
+    
         
         this.DigChampsP1.update();
         this.Snail.update();
 
-    
+    */
     }//End of update
 
 

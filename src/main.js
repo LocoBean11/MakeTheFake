@@ -19,7 +19,8 @@ physics: {
         debug: false
     }
 },
-scene: [ Play ]
+//zoom: 2,
+scene: [ DigChampsLevel1 ]
 }
 
     //define game

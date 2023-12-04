@@ -1,4 +1,4 @@
-class Snail extends Phaser.GameObjects.Sprites{
+/*class Snail extends Phaser.GameObjects.Sprites{
     constructor(scene, x, y, texture, frame) { 
         super(scene, x, y, texture, frame);
         scene.add.existing(this);
@@ -14,4 +14,4 @@ class Snail extends Phaser.GameObjects.Sprites{
              this.reset();
          }    
      }
-    }
+    } */

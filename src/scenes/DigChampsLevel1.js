@@ -10,8 +10,9 @@ class DigChampsLevel1 extends Phaser.Scene{
             frameHeight: 16
         })
 
-        this.load.image('digchampsbackgroundv2Image', 'DigChampsBackgroundV2.png');
-        this.load.tilemapTiledJSON('digchampslevel1JSON', 'DigChampsLevel1.json')
+        this.load.image('DigChampsBGImage', 'DigChampsBG.png');
+        this.load.tilemapTiledJSON('DigChampsLevel1JSON', 'DigChampsLevel1.json');
+        this.load.image('shovel', './assets/DigChampsP1.png');
 
 
         /*
@@ -44,13 +45,25 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.VEL = 100;
 
         //tilemap info
-        const map = this.add.tilemap('digchampslevel1JSON');
-        const tileset = map.addTileSetImage('DigChampsBackgroundV2', 'digchampsbackgroundv2Image' );
+        const map = this.add.tilemap('DigChampsLevel1JSON');
+        const tileset = map.addTilesetImage('DigChampsBG', 'DigChampsBGImage');
 
         const bgLayer = map.createLayer('Background', tileset, 0, 0);
         const groundLayer = map.createLayer('Ground', tileset, 0, 0);
 
-
+        // Add player
+        const digchampsp1Spawn = map.findObject('Spawns', obj => obj.name === 'digchampsp1Spawn');
+        // Replace 32 with coordinates slimeSpawn.x and y 
+        this.DigChampsP1 = this.physics.add.sprite(DigChampsP1.x, DigChampsP1.y, 'shovel', 0); 
+        this.DigChampsP1.body.setCollideWorldBounds(true);
+        
+        // Create walking animation
+        this.anims.create({
+            key: 'walk',
+            frames: this.anims.generateFrameNumbers('walk', {start: 0, end: 3}),
+            frameRate: 8,
+            repeat: -1,
+        });
         /*
             //Background
             this.DigChampsBackgroundV2 = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0);
@@ -76,14 +89,12 @@ class DigChampsLevel1 extends Phaser.Scene{
             this.physics.world.bounds.width = this.DCGroundCollision.width;
            this.physics.world.bounds.height = this.DCGroundCollision.height;
 
-            
-
             //Create enemy
             this.Snail = this.physics.add.sprite(game.config.width / 1.5, game.config.height / 1.58 - borderUISize - borderPadding, 'snail').setOrigin(0.5, 0);
             this.Snail.setScale(0.8);
             // Add a collider between enemy and ground
             this.physics.add.collider(this.Snail, this.DCGroundCollision); 
-
+*/
             // Add Player 1 Start Text
         this.P1StartText = this.add.sprite(game.config.width / 2, game.config.height / 2, 'starttext');
         this.P1StartText.setAlpha(1); // Set initial alpha to fully visible
@@ -102,6 +113,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         });
         //End of Start text
 
+        /*
         //Set up other properties for the player
         this.DigChampsP1.setCollideWorldBounds(true);
         //this.DigChampsP1.setBounce(0.5);
@@ -130,7 +142,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         /*keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        
+        */
         //Initialize the score
         this.p1Score = 0;
 
@@ -145,19 +157,13 @@ class DigChampsLevel1 extends Phaser.Scene{
 
             this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
 
-        // Create walking animation
-        this.anims.create({
-            key: 'walk',
-            frames: this.anims.generateFrameNumbers('walk', {start: 0, end: 3}),
-            frameRate: 8,
-            repeat: -1,
-        });
+        
 
         // Game Over flag
         this.gameOver = false;
 
     this.cursors = this.input.keyboard.createCursorKeys();
-*/
+
     }//End of create method
         
 

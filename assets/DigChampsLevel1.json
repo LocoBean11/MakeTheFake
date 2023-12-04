@@ -95,11 +95,11 @@
         {
          "columns":40,
          "firstgid":1,
-         "image":"DigChampsBackgroundV2.png",
+         "image":"DigChampsBG.png",
          "imageheight":480,
          "imagewidth":640,
          "margin":0,
-         "name":"DigChampsBackgroundV2",
+         "name":"DigChampsBG",
          "spacing":0,
          "tilecount":1200,
          "tileheight":16,

@@ -2,7 +2,6 @@
 //Game Title: Dig Champs
 //
 
-
 let config = {
     type: Phaser.AUTO,
     width: 640,
@@ -16,7 +15,7 @@ physics: {
         gravity: {
             y: 900
         },
-        debug: false
+        debug: true
     }
 },
 //zoom: 2,
@@ -29,7 +28,7 @@ scene: [ DigChampsLevel1 ]
 
 // define globals
 const textSpacer = 64;
-let DigChampsP1 = null;
+let DigChampsP1V2 = null;
 
 let highScore;
 let newHighScore = false;

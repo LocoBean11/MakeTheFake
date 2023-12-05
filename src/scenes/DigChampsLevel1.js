@@ -5,33 +5,27 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     preload() {
         this.load.path = './assets/'
-        this.load.spritesheet('shovel', 'DigChampsP1Walk.png', {
-            frameWidth: 16,
-            frameHeight: 16
+        this.load.spritesheet('Player1', 'DigChampsP1V2.png', {
+            frameWidth: 32,
+            frameHeight: 32
         })
 
         this.load.image('DigChampsBGImage', 'DigChampsBG.png');
         this.load.tilemapTiledJSON('DigChampsLevel1JSON', 'DigChampsLevel1.json');
-        this.load.image('shovel', './assets/DigChampsP1.png');
-
+        //this.load.image('shovel', './assets/DigChampsP1.png');
+        //this.load.image('snail', './assets/Snail.png');
 
         /*
         //Sprites and backgrounds
         this.load.image('background', './assets/DigChampsBackgroundV2.png');
         this.load.image('shovel', './assets/DigChampsP1.png');
-        this.load.image('snail', './assets/Snail.png');
         //this.load.image('emptyspace', './assets/emptyspace.png');
         this.load.image('ground', './assets/DCGroundCollision.png');
         this.load.image('starttext', './assets/P1StartText.png');
        */
        //Sprite sheet
        //this.load.spritesheet('walk', './assets/DigChampsP1Walk.png', {frameWidth: 300, frameHeight: 300, startFrame: 0, endFrame: 3});
-       /* this.load.path = './assets/'
-        this.load.spritesheet('walk', 'DigChampsP1Walk.png', {
-            frameWidth: 16,
-            frameHeight: 16
-        })
-*/
+       
     }//End of preload
 
         // Define a function to check for collisions
@@ -51,19 +45,24 @@ class DigChampsLevel1 extends Phaser.Scene{
         const bgLayer = map.createLayer('Background', tileset, 0, 0);
         const groundLayer = map.createLayer('Ground', tileset, 0, 0);
 
-        // Add player
-        const digchampsp1Spawn = map.findObject('Spawns', obj => obj.name === 'digchampsp1Spawn');
-        // Replace 32 with coordinates slimeSpawn.x and y 
-        this.DigChampsP1 = this.physics.add.sprite(DigChampsP1.x, DigChampsP1.y, 'shovel', 0); 
-        this.DigChampsP1.body.setCollideWorldBounds(true);
+        //Create Player
+        this.DigChampsP1V2 = this.physics.add.sprite(32, 100, 'Player1', 0);
+        this.DigChampsP1V2.body.setCollideWorldBounds(true);
+        this.DigChampsP1V2.setScale(1);
         
         // Create walking animation
         this.anims.create({
             key: 'walk',
-            frames: this.anims.generateFrameNumbers('walk', {start: 0, end: 3}),
+            frames: this.anims.generateFrameNumbers('Player1', {start: 2, end: 5}),
             frameRate: 8,
-            repeat: -1,
+            repeat: 1,
         });
+
+        //Create enemy
+        //this.Snail = this.physics.add.sprite(32, 32, 'snail', 0);
+       // this.Snail.body.setCollideWorldBounds(true);
+       // this.Snail.setScale(1);
+        
         /*
             //Background
             this.DigChampsBackgroundV2 = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0);
@@ -76,10 +75,7 @@ class DigChampsLevel1 extends Phaser.Scene{
             //Empty space for ground collision, currently under the actual ground
             this.DCGroundCollision = this.add.tileSprite(0, 0, 640, 360, 'ground').setOrigin(0, 0); //360 is the height
     
-            //Create Player
-            this.DigChampsP1 = this.physics.add.sprite(game.config.width / 7, game.config.height / 1.9 - borderUISize - borderPadding, 'shovel').setOrigin(0.5, 0);
-            //this.DigChampsP1.setBounce(0.2); // our player will bounce from items
-            this.DigChampsP1.setScale(0.8);
+            
             // Add a collider between player and ground
             this.physics.add.collider(this.DigChampsP1, this.DCGroundCollision); 
             this.physics.world.enable(this.DigChampsP1);
@@ -113,16 +109,24 @@ class DigChampsLevel1 extends Phaser.Scene{
         });
         //End of Start text
 
-        /*
-        //Set up other properties for the player
-        this.DigChampsP1.setCollideWorldBounds(true);
-        //this.DigChampsP1.setBounce(0.5);
-        this.DigChampsP1.setImmovable();
-        this.DigChampsP1.setMaxVelocity(0, 600);
-        this.DigChampsP1.setDragX(200);
-        this.DigChampsP1.setDragY(200);
 
-        
+        //Collision
+        groundLayer.setCollisionByProperty({
+            Collides: true
+        })
+
+        this.physics.add.collider(this.DigChampsP1V2, groundLayer);
+
+        //Set up other properties for the player
+        this.DigChampsP1V2.setCollideWorldBounds(true);
+        //this.DigChampsP1.setBounce(0.5);
+        this.DigChampsP1V2.setImmovable();
+        this.DigChampsP1V2.setMaxVelocity(0, 600);
+        this.DigChampsP1V2.setDragX(200);
+        this.DigChampsP1V2.setDragY(200);
+
+        this.cursors = this.input.keyboard.createCursorKeys();
+        /*
     // Create colliders between the player
         this.physics.add.collider(this.DigChampsP1, this.Snail, this.handleCollision, null, this);
         this.physics.add.collider(this.DigChampsP1, this.DCGroundCollision, this.handleCollision, null, this);
@@ -138,11 +142,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.maxY
       ).setOrigin(0, 0);
 
-        //Define keys
-        /*keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        */
         //Initialize the score
         this.p1Score = 0;
 
@@ -157,42 +156,40 @@ class DigChampsLevel1 extends Phaser.Scene{
 
             this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
 
-        
-
         // Game Over flag
         this.gameOver = false;
 
     this.cursors = this.input.keyboard.createCursorKeys();
 
     }//End of create method
-        
+        /*
 
     update(){
-        /*
+        
         console.log(this.cursors.left.isDown, this.cursors.right.isDown);
 
     if (this.cursors.left.isDown) { // if the left arrow key is down
         console.log('Setting velocityX:', -200);
-        this.DigChampsP1.setVelocityX(-200); // move left
+        this.DigChampsP1V2.setVelocityX(-200); // move left
     }
     else if (this.cursors.right.isDown){ // if the right arrow key is down
         console.log('Setting velocityX:', 200);
-        this.DigChampsP1.setVelocityX(200); // move right
+        this.DigChampsP1V2.setVelocityX(200); // move right
     }
     else {
         // Reset velocity when no key is pressed
-        this.DigChampsP1.setVelocityX(0);
+        this.DigChampsP1V2.setVelocityX(0);
     }
 
-    if ((this.cursors.space.isDown || this.cursors.up.isDown && this.DigChampsP1.body.onFloor()))
+    if ((this.cursors.space.isDown || this.cursors.up.isDown && this.DigChampsP1V2.body.onFloor()))
     {
-        this.DigChampsP1.setVelocityY(-300); // jump up
+        this.DigChampsP1V2.setVelocityY(-300); // jump up
     }
 
-        /*
+        
     // Check for collisions between player and snail
     if (this.checkCollision(this.DigChampsP1, this.Snail)) {
-    
+    /*
     //Play death animation
     this.sound.play('hitHurt', { volume: 0.2 }); 
     this.sound.play('gameover', { volume: 0.2 }); 
@@ -202,12 +199,12 @@ class DigChampsLevel1 extends Phaser.Scene{
     
     this.backgroundMusic.stop();
     }//end of if statement
-    
-        
-        this.DigChampsP1.update();
-        this.Snail.update();
-
     */
+        
+        this.DigChampsP1V2.update();
+        //this.Snail.update();
+
+    
     }//End of update
 
 

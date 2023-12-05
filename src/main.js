@@ -10,12 +10,12 @@ let config = {
     autoCenter: Phaser.Scale.CENTER_BOTH
 },
 physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
         gravity: {
             y: 900
         },
-        debug: true
+        debug: false
     }
 },
 //zoom: 2,

@@ -13,13 +13,13 @@ physics: {
     default: "arcade",
     arcade: {
         gravity: {
-            y: 900
+            y: 300
         },
         debug: true
     }
 },
 //zoom: 2,
-scene: [ DigChampsLevel1 ]
+scene: [ Title, DigChampsLevel1 ]
 }
 
     //define game

@@ -1,6 +1,6 @@
 class DigChampsLevel1 extends Phaser.Scene{
     constructor() {
-        super('digchampslevel1Scene');
+        super("digchampslevel1Scene");
     }
 
     preload() {
@@ -202,24 +202,24 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.DigChampsP1Single.setVelocityX(-speed);
 
          // Scroll the background left
-         this.cameras.main.scrollX -= speed * this.game.loop.delta / 1000;
+         //this.cameras.main.scrollX -= speed * this.game.loop.delta / 1000;
 
           // Check if the camera reached the beginning of the background
         if (this.cameras.main.scrollX < 0) {
             // Reset the camera to create a looping effect
-            this.cameras.main.scrollX = this.backgroundWidth;
+           // this.cameras.main.scrollX = this.backgroundWidth;
         }
 
     } else if (this.cursors.right.isDown) {
         this.DigChampsP1Single.setVelocityX(speed);
 
         // Scroll the background right
-        this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
+        //this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
 
         // Check if the camera reached the end of the background
         if (this.cameras.main.scrollX > this.backgroundWidth) {
             // Reset the camera to create a looping effect
-            this.cameras.main.scrollX = 0;
+           // this.cameras.main.scrollX = 0;
         }
         
     } else {

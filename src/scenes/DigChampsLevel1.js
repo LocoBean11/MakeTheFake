@@ -44,9 +44,10 @@ class DigChampsLevel1 extends Phaser.Scene{
         const groundLayer = map.createLayer('Ground', tileset, 0, 0);
         const bgLayer = map.createLayer('Background', tileset, 0, 0);
 
-        groundLayer.setScrollFactor(0); // Fix the background layer
-
+        // Initialize variables
         this.backgroundWidth = bgLayer.width;
+
+        groundLayer.setScrollFactor(0); // Fix the background layer
 
         //this.DigChampsBG = this.add.tilesprite(320, 240, 640, 480);
 
@@ -68,7 +69,7 @@ class DigChampsLevel1 extends Phaser.Scene{
          this.DigChampsP1V2.setOrigin(0.5, 0.5);
         this.DigChampsP1V2.setImmovable();
         this.DigChampsP1V2.setMaxVelocity(600, 600);
-       this.DigChampsP1V2.setDragX(200);
+       //this.DigChampsP1V2.setDragX(200);
        this.DigChampsP1V2.setDragY(200);
 
         // Create walking animation
@@ -125,10 +126,10 @@ class DigChampsLevel1 extends Phaser.Scene{
          // Set the boundaries of our game world
         this.physics.world.bounds.width = groundLayer.width;
         this.physics.world.bounds.height = groundLayer.height;
-        
-            //Background
-           // this.DigChampsBackgroundV2 = this.add.tileSprite(0, 0, 640, 480, 'background').setOrigin(0, 0);
 
+        // Store the tilemap for later use
+        this.tilemap = map;
+        
             // Set the scale to fit the bounding box
           //  this.DigChampsBackgroundV2.setScale(game.config.width / this.DigChampsBackgroundV2.width, game.config.height / this.DigChampsBackgroundV2.height);
 
@@ -195,6 +196,9 @@ class DigChampsLevel1 extends Phaser.Scene{
         
     update(){
         
+         // Set the background position based on the player's position
+        //this.groundLayer.x = this.DigChampsP1V2.x / 4; // Adjust the division factor as needed
+
         //this.direction = new Phaser.Math.Vector2(0)
         //console.log(this.cursors.left.isDown, this.cursors.right.isDown);
         const speed = 400;
@@ -202,37 +206,50 @@ class DigChampsLevel1 extends Phaser.Scene{
     if (this.cursors.left.isDown) {
         this.DigChampsP1V2.anims.play('Player1');
         this.DigChampsP1V2.setVelocityX(-speed);
+        this.scrollBackground(-speed);
         
          // Scroll the background left
-         this.cameras.main.scrollX -= speed * this.game.loop.delta / 1000;
+        // this.cameras.main.scrollX -= speed * this.game.loop.delta / 1000;
 
           // Check if the camera reached the beginning of the background
-        if (this.cameras.main.scrollX < 0) {
+      //  if (this.cameras.main.scrollX < 0) {
             // Reset the camera to create a looping effect
-           this.cameras.main.scrollX = this.backgroundWidth;
-        }
+           //this.cameras.main.scrollX = this.backgroundWidth;
+      //  }
 
     } else if (this.cursors.right.isDown) {
         this.DigChampsP1V2.anims.play('Player1');
         this.DigChampsP1V2.setVelocityX(speed);
-        
+        this.scrollBackground(speed);
         // Scroll the background right
-        this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
+       // this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
 
         // Check if the camera reached the end of the background
-        if (this.cameras.main.scrollX > this.backgroundWidth) {
+       // if (this.cameras.main.scrollX > this.backgroundWidth) {
             // Reset the camera to create a looping effect
-            this.cameras.main.scrollX = 0;
-        }
+            //this.cameras.main.scrollX = 0;
+     //   }
         
     } else {
         this.DigChampsP1V2.setVelocityX(0);
-        this.DigChampsP1V2.anims.stop('Player1');
+        //this.DigChampsP1V2.anims.stop('Player1');
     }
 
     if (this.cursors.up.isDown && this.DigChampsP1V2.body.onFloor()) {
         this.DigChampsP1V2.setVelocityY(-500);
     }
+    
+    
+    // Scroll the background based on player movement
+    this.cameras.main.scrollX += this.DigChampsP1V2.body.velocity.x;
+
+    // Optional: If you want the background to loop, you can reset the camera scroll when it reaches the bounds
+    if (this.cameras.main.scrollX > this.tilemap.widthInPixels) {
+        this.cameras.main.scrollX = 0;
+    } else if (this.cameras.main.scrollX < 0) {
+        this.cameras.main.scrollX = this.tilemap.widthInPixels;
+    }
+
 
     // Basic collision check
     if (Phaser.Geom.Intersects.RectangleToRectangle(this.DigChampsP1V2.getBounds(), this.Snail.getBounds())) {
@@ -254,13 +271,14 @@ class DigChampsLevel1 extends Phaser.Scene{
     //if(this.DigChampsP1Single.Collides(this.Snail)){
 
     //}
-
+    
         //this.direction.normalize();
         //this.DigChampsP1Single.setVelocityX(this.VEL * this.direction.x);
         //this.DigChampsP1Single.update();
         //this.Snail.update();
 }
     }//End of update
+    
     handleBackgroundLoop() {
         if (this.cameras.main.scrollX < 0) {
             this.cameras.main.scrollX = this.backgroundWidth;
@@ -278,7 +296,7 @@ class DigChampsLevel1 extends Phaser.Scene{
             this.DigChampsP1V2.destroy();
         
     //}//End of if statement
-
+        
     }//end of handle collision
     //Reset method for foodItem
     //(Snail) {

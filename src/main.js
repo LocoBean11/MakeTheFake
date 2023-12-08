@@ -15,7 +15,7 @@ physics: {
         gravity: {
             y: 500
         },
-        debug: false
+        debug: true
     }
 },
 //zoom: 2,

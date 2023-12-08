@@ -15,6 +15,11 @@ class DigChampsLevel1 extends Phaser.Scene{
             frameWidth: 200,
             frameHeight: 200
         })
+
+        this.load.spritesheet('Worm', 'Worm.png', {
+            frameWidth: 88,
+            frameHeight: 131
+        })
         
         this.load.image('DigChampsBGImage', 'DigChampsBG.png');
         this.load.tilemapTiledJSON('DigChampsLevel1JSON', 'DigChampsLevel1.json');
@@ -52,17 +57,14 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.backgroundWidth = bgLayer.width;
 
         groundLayer.setScrollFactor(0); // Fix the background layer
-
-        //this.DigChampsBG = this.add.tilesprite(320, 240, 640, 480);
         
         //Add Player
         //this.DigChampsP1Single = this.physics.add.sprite(DigChampsP1Single.x, DigChampsP1Single.y, 'Player1', 0); 
         this.DigChampsP1V2 = this.physics.add.sprite(100, 250, 'Player1', 0);
-        //this.DigChampsP1V2.setCollideWorldBounds(true);
-        //this.DigChampsP1V2.body.setCollideWorldBounds(true);
+       // this.DigChampsP1V2.body.setCollideWorldBounds(true);
         this.DigChampsP1V2.setScale(1.7);
 
-         //Set up other properties for the player
+        //Set up other properties for the player
 
         this.physics.world.enable(this.DigChampsP1V2);
         // Set player physics body size in pixels
@@ -78,7 +80,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.anims.create({
             key: 'Player1',
             frameRate: 15,
-
             frames: this.anims.generateFrameNumbers('Player1', {
             start: 1,
             end: 2,
@@ -86,18 +87,19 @@ class DigChampsLevel1 extends Phaser.Scene{
         repeat: 1
         });
         
-        //Add snail
+        //Add snail enemy
         this.Snail = this.physics.add.sprite(650, 295, 'Snail', 0);
         this.Snail.body.setCollideWorldBounds(true);
         this.Snail.setScale(0.9);
 
-        // Set player physics body size
+        this.physics.world.enable(this.Snail);
+        // Set snail physics body size
         this.Snail.body.setSize(167, 121);
-         // Set player origin to the center
+         // Set snail origin to the center
          this.Snail.setOrigin(0.5, 0.5);
         this.Snail.setImmovable();
         this.Snail.setMaxVelocity(600, 600);
-       this.Snail.setDragX(200);
+       //this.Snail.setDragX(200);
        this.Snail.setDragY(200);
 
        //Collision between Player and Snail
@@ -106,6 +108,21 @@ class DigChampsLevel1 extends Phaser.Scene{
         // Set up collision between player and snail
         this.physics.add.collider(this.DigChampsP1V2, this.Snail, this.handleCollision, null, this);
 
+        //Add Worm enemy
+        this.Worm= this.physics.add.sprite(650, 200, 'Worm', 0);
+        this.Worm.body.setCollideWorldBounds(true);
+        this.Worm.setScale(0.9);
+
+        this.physics.world.enable(this.Worm);
+        // Set snail physics body size
+        this.Worm.body.setSize(88, 131);
+         // Set snail origin to the center
+         this.Worm.setOrigin(0.5, 0.5);
+        this.Worm.setImmovable();
+        this.Worm.setMaxVelocity(600, 600);
+       //this.Snail.setDragX(200);
+       this.Worm.setDragY(200);
+       
         //Create cursor keys
         this.cursors = this.input.keyboard.createCursorKeys();
         
@@ -195,6 +212,7 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         //this.direction = new Phaser.Math.Vector2(0)
         //console.log(this.cursors.left.isDown, this.cursors.right.isDown);
+        const snailSpeed = 100; // Adjust the speed as needed
         const speed = 430;
     if(this.DigChampsP1V2Alive){
     if (this.cursors.left.isDown) {
@@ -250,14 +268,6 @@ class DigChampsLevel1 extends Phaser.Scene{
     // Snail movement
     this.Snail.x -= 0.01;
 
-        // Update the snail's position and scroll with the camera
-        this.Snail.x -= this.DigChampsP1V2.body.velocity.x * this.game.loop.delta / 1000;
-
-        // Reset the snail's position if it goes off-screen
-        if (this.Snail.x < -this.Snail.width) {
-            this.Snail.x = this.sys.game.config.width + this.Snail.width;
-        }
-    
         //this.direction.normalize();
         //this.DigChampsP1Single.setVelocityX(this.VEL * this.direction.x);
         //this.DigChampsP1Single.update();

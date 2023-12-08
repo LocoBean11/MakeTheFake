@@ -4,7 +4,7 @@
 
 let config = {
     type: Phaser.AUTO,
-    width: 640,
+    width: 735,
     height: 480,
     scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH
@@ -13,7 +13,7 @@ physics: {
     default: "arcade",
     arcade: {
         gravity: {
-            y: 300
+            y: 500
         },
         debug: true
     }

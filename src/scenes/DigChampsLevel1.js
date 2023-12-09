@@ -49,6 +49,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.load.image('DigChampsBGImage', 'DigChampsBG.png');
         this.load.tilemapTiledJSON('DigChampsLevel1JSON', 'DigChampsLevel1.json');
 
+         
+
         }//End of preload
 
          // Define a function to check for collisions
@@ -204,7 +206,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.P1LifeIcon = this.add.sprite(50, 440, 'LifeIcon');
         this.P1LifeIcon.setScale(0.5);
 
-        
         this.P1LifeIcon = this.add.sprite(100, 435, 'LifeIcon');
         this.P1LifeIcon.setScale(0.5);
 

@@ -2,22 +2,7 @@ class DigChampsLevel1 extends Phaser.Scene{
     constructor() {
         super("digchampslevel1Scene");
     }
-    /*
-    generateBackground() {
-        // Create a new background layer
-        const newBgLayer = this.tilemap.createLayer('Background', this.tileset, 0, 0);
-    
-        // Set the scroll factor for the new background layer
-        newBgLayer.setScrollFactor(0);
-    
-        // Update the tilemap layers to include the new background layer
-        this.tilemap.createLayer('Ground', this.tileset, 0, 0);
-        this.tilemap.createLayer('Background', this.tileset, 0, 0);
-    
-        // Update the background width based on the new layer
-        this.backgroundWidth += newBgLayer.width;
-    }
-    */
+
     preload() {
         //this.load.image('Player1', './assets/DigChampsP1Single.png');
         this.load.path = './assets/';
@@ -36,9 +21,14 @@ class DigChampsLevel1 extends Phaser.Scene{
             frameHeight: 282
         })
 
+        this.load.spritesheet('Demon', 'DemonSS.png', {
+            frameWidth: 110,
+            frameHeight: 156
+        })
+
         this.load.spritesheet('LifeIcon', 'P1LifeIcon.png', {
-            frameWidth: 108,
-            frameHeight: 123
+           frameWidth: 108,
+           frameHeight: 123
         })
 
         this.load.spritesheet('starttext', 'P1StartText.png', {
@@ -49,7 +39,12 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.load.image('DigChampsBGImage', 'DigChampsBG.png');
         this.load.tilemapTiledJSON('DigChampsLevel1JSON', 'DigChampsLevel1.json');
 
-         
+        //this.load.image('P1LifeIconImage', 'P1LifeIcon.png');
+        //this.load.tilemapTiledJSON('P1LifeIconTiledJSON', 'P1LifeIconTiled.json');
+
+         // Load audio based on object properties in the tilemap
+        this.load.path = './assets/audio/';
+        this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
 
         }//End of preload
 
@@ -57,19 +52,30 @@ class DigChampsLevel1 extends Phaser.Scene{
         checkCollision(object1, object2) {
         return Phaser.Geom.Intersects.RectangleToRectangle(object1.getBounds(), object2.getBounds());
     }
-       
+
+    demonFollows () {
+        this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2, 3 00);
+
+    }
     create() {
         
         //Velocity constant
         this.VEL = 100;
 
+        //Sounds and looping BGM
+        this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
+
         //Tilemap info
         const map = this.add.tilemap('DigChampsLevel1JSON');
         const tileset = map.addTilesetImage('DigChampsBG', 'DigChampsBGImage');
 
+       // const image = this.add.tilemap('P1LifeIconTiledJSON');
+       // const tileimage = map.addTilesetImage('P1LifeIcon', 'P1LifeIconImage');
+
         const groundLayer = map.createLayer('Ground', tileset, 0, 0);
         const bgLayer = map.createLayer('Background', tileset, 0, 0);
-
+        //const lifeLayer = map.createLayer('Layer1', tileset, 0, 0);
+        
         // Initialize variables
         this.backgroundWidth = bgLayer.width;
 
@@ -77,11 +83,12 @@ class DigChampsLevel1 extends Phaser.Scene{
         bgLayer.setScrollFactor(0);
 
         // set bounds so the camera won't go outside the game world
-        //this.cameras.main.startFollow(this.DigChampsP1V2, true, 0, 0);
-       // this.cameras.main.setScroll(0, 0);
+
+       // this.cameras.main.startFollow(this.DigChampsP1V2, true, 0, 0);
+      // this.cameras.main.setScroll(0, 0);
        // this.cameras.main.setScrollFactor(0);
-        //this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels); 
-        //this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightPixels);
+       // this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels); 
+       // this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightPixels);
 
         // Initialize variables
         this.backgroundWidth = bgLayer.width;
@@ -122,15 +129,16 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.Snail.body.setCollideWorldBounds(true);
         this.Snail.setScale(0.9);
 
+        this.Snail.setGravityY(0);
         this.physics.world.enable(this.Snail);
         // Set snail physics body size
         this.Snail.body.setSize(167, 121);
          // Set snail origin to the center
          this.Snail.setOrigin(0.5, 0.5);
         this.Snail.setImmovable();
-        this.Snail.setMaxVelocity(600, 600);
+        this.Snail.setMaxVelocity(600, 0);
        //this.Snail.setDragX(200);
-       this.Snail.setDragY(200);
+       //this.Snail.setDragY(200);
 
        //Collision between Player and Snail
        this.physics.world.enable([this.DigChampsP1V2, this.Snail]);
@@ -139,7 +147,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.physics.add.collider(this.DigChampsP1V2, this.Snail, this.handleCollision, null, this);
 
         //Add Worm enemy
-        this.Worm = this.physics.add.sprite(1000, 200, 'Worm', 0);
+        this.Worm = this.physics.add.sprite(4000, 340, 'Worm', 0);
         //this.Worm.body.setCollideWorldBounds(true);
         this.Worm.setScale(0.9);
 
@@ -148,8 +156,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.Worm.body.setSize(88, 60);
          // Set worm origin to the center
          this.Worm.setOrigin(0.5, 0.5);
-        this.Worm.setImmovable();
-        this.Worm.setMaxVelocity(600, 600);
+        this.Worm.setImmovable(true);
+        this.Worm.setMaxVelocity(600, 0);
        //this.Worm.setDragX(200);
        this.Worm.setDragY(200);
 
@@ -158,6 +166,41 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         // Set up collision between player and worm
         this.physics.add.collider(this.DigChampsP1V2, this.Worm, this.handleCollision, null, this);
+
+        //Add Demon enemy
+        this.DemonSS = this.physics.add.sprite(1000, 280, 'Demon', 100);
+        //this.Demon.body.setCollideWorldBounds(true);
+        this.DemonSS.setScale(0.9);
+        //this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2);
+
+        this.physics.world.enable(this.DemonSS);
+        // Set Demon physics body size
+        this.DemonSS.body.setSize(105, 157);
+         // Set Demon origin to the center
+         this.DemonSS.setOrigin(0.5, 0.5);
+        this.DemonSS.setImmovable(true);
+        //this.DemonSS.setVelocityX(100, 0);
+        this.DemonSS.setMaxVelocity(600, 0);
+       //this.Demon.setDragX(200);
+       //this.DemonSS.setDragY(200);
+
+       //Collision between Player and Worm
+       this.physics.world.enable([this.DigChampsP1V2, this.DemonSS]);
+
+        // Set up collision between player and worm
+        this.physics.add.collider(this.DigChampsP1V2, this.DemonSS, this.handleCollision, null, this);
+
+        // Create walking animation
+        this.anims.create({
+            key: 'Demon',
+            frameRate: 10,
+            frames: this.anims.generateFrameNumbers('Demon', {
+            start: 1,
+            end: 2,
+        }),
+        repeat: -1
+        });
+        this.DemonSS.play('Demon');
 
         //Create cursor keys
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -173,6 +216,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.physics.world.enable(this.Snail);
         this.physics.add.collider(groundLayer, this.Worm);
         this.physics.world.enable(this.Worm);
+        this.physics.add.collider(groundLayer, this.DemonSS);
+        this.physics.world.enable(this.DemonSS);
 
         //groundLayer.setCollisionByExclusion([-1]); //Turns ground collison on and off
 
@@ -192,19 +237,26 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.tweens.add({
             targets: this.P1StartText,
             alpha: 1,
-            duration: 2000, // Adjust the duration as needed
+            duration: 1000,
             ease: 'Linear',
             onComplete: function () {
-                // Remove the text image when the fade-out is complete
                 this.P1StartText.destroy();
+
+                // Allow player movement after the Player 1 Start text disappears
+            setTimeout(() => {
+                this.allowPlayerMovement = true;
+                }, 100);
             },
             callbackScope: this,
         });
         //End of Player 1 Start text
-        
+
         //Player 1 Life Icon
         this.P1LifeIcon = this.add.sprite(50, 440, 'LifeIcon');
+        //this.P1LifeIcon = this.add.sprite(this.groundLayer.width, this.groundLayer.height, 'LifeIcon');
         this.P1LifeIcon.setScale(0.5);
+        //this.physics.world.enable(P1LifeIcon); // Enable physics for each life icon if needed
+        //this.P1LifeIcon.setMaxVelocity(600, 0);
 
         this.P1LifeIcon = this.add.sprite(100, 435, 'LifeIcon');
         this.P1LifeIcon.setScale(0.5);
@@ -218,6 +270,7 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         // Iterate over each child in the group to set the scroll factor
         this.lifeCounterIcons.children.iterate((P1LifeIcon) => {
+            this.P1LifeIcon.moves(false);
             P1LifeIcon.setScrollFactor(0);
             P1LifeIcon.setDepth(1);
             this.physics.world.enable(P1LifeIcon); // Enable physics for each life icon if needed
@@ -260,14 +313,22 @@ class DigChampsLevel1 extends Phaser.Scene{
     }//End of create method
         
     update(){
+
+        this.demonFollows();
         
          // Set the background position based on the player's position
         //this.groundLayer.x = this.DigChampsP1V2.x / 4; // Adjust the division factor as needed
 
         //this.direction = new Phaser.Math.Vector2(0)
-        //console.log(this.cursors.left.isDown, this.cursors.right.isDown);
-    
+         // Debugging statements
+    //console.log('Player position:', this.DigChampsP1V2.x, this.DigChampsP1V2.y);
+    //console.log('Demon position:', this.DemonSS.x, this.DemonSS.y);
+   // console.log('Direction:', normalizedDirectionX, normalizedDirectionY);
+
+        if (this.allowPlayerMovement) {
+        // Player movement logic...
         const speed = 430;
+
     if(this.DigChampsP1V2Alive){
     if (this.cursors.left.isDown) {
         this.DigChampsP1V2.anims.play('Player1');
@@ -286,12 +347,7 @@ class DigChampsLevel1 extends Phaser.Scene{
     } else if (this.cursors.right.isDown) {
         this.DigChampsP1V2.anims.play('Player1');
         this.DigChampsP1V2.setVelocityX(speed);
-        // Check if the player has moved to a new section (adjust as needed)
-       // if (this.DigChampsP1V2.x > this.backgroundWidth - this.cameras.main.width * 2) {
-        //    this.generateBackground();
-       // }
-        //this.scrollBackground(speed);
-        // Scroll the background right
+
         this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
 
         // Check if the camera reached the end of the background
@@ -308,20 +364,25 @@ class DigChampsLevel1 extends Phaser.Scene{
     if (this.cursors.up.isDown && this.DigChampsP1V2.body.onFloor()) {
         this.DigChampsP1V2.setVelocityY(-500);
     }
-     // Scroll the background based on player movement
-     //this.scrollBackground(this.DigChampsP1V2.body.velocity.x);
-    
-    // Scroll the background based on player movement
-    //this.cameras.main.scrollX += this.DigChampsP1V2.body.velocity.x;
-    // Check if the player has moved to a new section (adjust as needed)
+    /*
+     // Calculate direction from Demon to player
+     const directionX = this.DigChampsP1V2.x - this.DemonSS.x;
 
-    //if (this.DigChampsP1V2.x > this.backgroundWidth - this.cameras.main.width * 2) {
-     //   this.generateBackground();
+     // Normalize direction
+     const length = Math.abs(directionX);
+     const normalizedDirectionX = directionX / length;
+
+     // Set Demon's velocity based on normalized direction
+     const demonSpeed = 2; // Adjust speed as needed
+     this.DemonSS.setVelocity(normalizedDirectionX * demonSpeed * demonSpeed);
+
+     // Play the Demon's animation
+     this.DemonSS.anims.play('Demon', true);
+*/
     //}
+}//Player movement logic
     // Basic collision check
     if (Phaser.Geom.Intersects.RectangleToRectangle(this.DigChampsP1V2.getBounds(), this.Snail.getBounds())) {
-        // Handle collision
-        // For example, you might want to play a sound or trigger some other action
         // this.sound.play('hitHurt', { volume: 0.2 });
         // this.DigChampsP1Single.destroy();
         // this.Snail.destroy();
@@ -330,22 +391,17 @@ class DigChampsLevel1 extends Phaser.Scene{
     // Snail movement
     this.Snail.x -= 0.01;
     this.Worm.x -= 3;
+   // this.DemonSS.x = -6;
+   
 
         //this.direction.normalize();
-        //this.DigChampsP1Single.setVelocityX(this.VEL * this.direction.x);
         //this.DigChampsP1Single.update();
         //this.Snail.update();
-}
-    }//End of update
-   // scrollBackground(speed) {
-         //Scroll the background
-       //this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
     
-        // Check if the camera reached the end of the background
-       // if (this.cameras.main.scrollX > this.backgroundWidth) {
-            // Reset the camera to create a looping effect
-         //   this.cameras.main.scrollX = 0;
-       // }
+}//End of Player allowedMovement
+
+    }//End of update
+    
    // }
     handleBackgroundLoop() {
         if (this.cameras.main.scrollX < 0) {
@@ -359,11 +415,14 @@ class DigChampsLevel1 extends Phaser.Scene{
     handleCollision(DigChampsP1V2, Snail) {
         //if (this.DigChampsP1Single.checkCollision(this.DigChampsP1, this.Snail)) {
         this.DigChampsP1V2Alive = false;
+        this.DigChampsMusic.stop();
             //Play death animation
             //this.sound.play('hitHurt', { volume: 0.2 }); 
             //this.sound.play('gameover', { volume: 0.2 }); 
             this.DigChampsP1V2.destroy();
+            
              // Remove a life image from the group
+             
     const lifeImage = this.lifeCounterIcons.getFirstAlive();
     if (lifeImage) {
         lifeImage.setAlpha(0); // Hide the image
@@ -381,7 +440,6 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     }//End of handle collision
 
-    /*
     // Inside a function to restart the game
     restartGame() {
     // Reset lives
@@ -396,8 +454,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         repeat: this.playerLives - 1, // Set the number of initial lives
         setXY: { x: 16, y: 16, stepX: 40 } // Adjust the spacing between life images
     });
-
-    }
-    */
-
+    
+    }//End of restartGame
+    
 }//End of class

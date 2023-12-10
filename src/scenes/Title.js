@@ -35,9 +35,8 @@ create() {
   titleText.setOrigin(0.5, 0.5); // Center the text
 
   // Add Press Space text
-  this.SpaceButtonText = this.add.sprite(370, 400, 'PressSpace');
+  this.SpaceButtonText = this.add.sprite(365, 400, 'PressSpace');
   this.SpaceButtonText.setScale(1);
-
 
       //Define cursor keys
       this.cursors = this.input.keyboard.createCursorKeys();
@@ -48,7 +47,6 @@ create() {
         //this.sound.play('select', { volume: 0.2 }); 
         this.scene.start("digchampslevel1Scene"); 
         this.DigChampsSelectSfx.play();
-        //this.titlescreenMusic.stop();  
       }
      
       

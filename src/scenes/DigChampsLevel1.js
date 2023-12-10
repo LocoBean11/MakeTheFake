@@ -6,21 +6,15 @@ class DigChampsLevel1 extends Phaser.Scene{
     preload() {
         //this.load.image('Player1', './assets/DigChampsP1Single.png');
         this.load.path = './assets/';
-        this.load.spritesheet('Player1', 'DigChampsP1V2.png', {
-            frameWidth: 84,
-            frameHeight: 90
+        this.load.spritesheet('Player1', 'DigChampsP1V2.png', {frameWidth: 84,  frameHeight: 90
         })
-
-        this.load.spritesheet('Snail', 'Snail.png', {
-            frameWidth: 200,
-            frameHeight: 200
+           
+        this.load.spritesheet('Snail', 'Snail.png', { frameWidth: 200, frameHeight: 200
         })
-
-        this.load.spritesheet('Worm', 'Worm.png', {
-            frameWidth: 245,
-            frameHeight: 282
+              
+        this.load.spritesheet('Worm', 'Worm.png', { frameWidth: 245, frameHeight: 282
         })
-
+            
         this.load.spritesheet('Demon', 'DemonSS.png', {
             frameWidth: 110,
             frameHeight: 156
@@ -35,6 +29,11 @@ class DigChampsLevel1 extends Phaser.Scene{
             frameWidth: 150,
             frameHeight: 101
         })
+
+        this.load.spritesheet('Block', 'Block.png', {
+            frameWidth: 80,
+            frameHeight: 72
+        })
         
         this.load.image('DigChampsBGImage', 'DigChampsBG.png');
         this.load.tilemapTiledJSON('DigChampsLevel1JSON', 'DigChampsLevel1.json');
@@ -42,7 +41,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         //this.load.image('P1LifeIconImage', 'P1LifeIcon.png');
         //this.load.tilemapTiledJSON('P1LifeIconTiledJSON', 'P1LifeIconTiled.json');
 
-         // Load audio based on object properties in the tilemap
+         // Load audio 
         this.load.path = './assets/audio/';
         this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
 
@@ -54,7 +53,7 @@ class DigChampsLevel1 extends Phaser.Scene{
     }
 
     demonFollows () {
-        this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2, 3 00);
+        this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2, 100);
 
     }
     create() {
@@ -125,11 +124,11 @@ class DigChampsLevel1 extends Phaser.Scene{
         });
         
         //Add Snail enemy
-        this.Snail = this.physics.add.sprite(650, 295, 'Snail', 0);
+        this.Snail = this.physics.add.sprite(1500, 295, 'Snail', 0);
         this.Snail.body.setCollideWorldBounds(true);
         this.Snail.setScale(0.9);
 
-        this.Snail.setGravityY(0);
+        //this.Snail.setGravityY(0);
         this.physics.world.enable(this.Snail);
         // Set snail physics body size
         this.Snail.body.setSize(167, 121);
@@ -138,7 +137,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.Snail.setImmovable();
         this.Snail.setMaxVelocity(600, 0);
        //this.Snail.setDragX(200);
-       //this.Snail.setDragY(200);
 
        //Collision between Player and Snail
        this.physics.world.enable([this.DigChampsP1V2, this.Snail]);
@@ -156,7 +154,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.Worm.body.setSize(88, 60);
          // Set worm origin to the center
          this.Worm.setOrigin(0.5, 0.5);
-        this.Worm.setImmovable(true);
+        this.Worm.setImmovable();
         this.Worm.setMaxVelocity(600, 0);
        //this.Worm.setDragX(200);
        this.Worm.setDragY(200);
@@ -166,6 +164,12 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         // Set up collision between player and worm
         this.physics.add.collider(this.DigChampsP1V2, this.Worm, this.handleCollision, null, this);
+
+         //Collision between Snail and Worm
+       this.physics.world.enable([this.Snail, this.Worm]);
+
+       // Set up collision between snail and worm
+       this.physics.add.collider(this.Snail, this.Worm, this.handleCollision, null, this);
 
         //Add Demon enemy
         this.DemonSS = this.physics.add.sprite(1000, 280, 'Demon', 100);
@@ -180,14 +184,14 @@ class DigChampsLevel1 extends Phaser.Scene{
          this.DemonSS.setOrigin(0.5, 0.5);
         this.DemonSS.setImmovable(true);
         //this.DemonSS.setVelocityX(100, 0);
-        this.DemonSS.setMaxVelocity(600, 0);
+        this.DemonSS.setMaxVelocity(1000, 0);
        //this.Demon.setDragX(200);
        //this.DemonSS.setDragY(200);
 
-       //Collision between Player and Worm
+       //Collision between Player and Demon
        this.physics.world.enable([this.DigChampsP1V2, this.DemonSS]);
 
-        // Set up collision between player and worm
+        // Set up collision between player and demon
         this.physics.add.collider(this.DigChampsP1V2, this.DemonSS, this.handleCollision, null, this);
 
         // Create walking animation
@@ -201,9 +205,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         repeat: -1
         });
         this.DemonSS.play('Demon');
-
-        //Create cursor keys
-        this.cursors = this.input.keyboard.createCursorKeys();
         
         //Collision between player, enemies and ground
         groundLayer.setCollisionByProperty({
@@ -224,6 +225,25 @@ class DigChampsLevel1 extends Phaser.Scene{
          // Set the boundaries of our game world
         this.physics.world.bounds.width = groundLayer.width;
         this.physics.world.bounds.height = groundLayer.height;
+
+        //Add Block
+        this.Block = this.physics.add.sprite(1000, 315, 'Block', 0);
+        this.Block.setScale(1);
+
+        this.physics.world.enable(this.Block);
+        // Set Demon physics body size
+        this.Block.body.setSize(80, 72);
+         // Set Demon origin to the center
+         this.Block.setOrigin(0.5, 0.5);
+        this.Block.setImmovable(true);
+        //this.DemonSS.setVelocityX(100, 0);
+        this.Block.setMaxVelocity(1000, 0);
+        
+        //Collision between Player and Demon
+       this.physics.world.enable([this.DigChampsP1V2, this.Block]);
+
+       // Set up collision between player and demon
+       this.physics.add.collider(this.DigChampsP1V2, this.Block, this.handleCollision, null, this);
 
         // Store the tilemap for later use
         this.tilemap = map;
@@ -294,7 +314,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         let scoreConfig = {
             fontFamily: 'Times New Roman',
             fontSize: '30px',
-            color: '#39FF14',
+            color: '#74f059',
             align: 'left',
             fixedWidth: 200
             }

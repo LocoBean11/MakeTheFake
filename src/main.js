@@ -15,12 +15,12 @@ physics: {
         gravity: {
             y: 500
         },
-        debug: false
-        //true
+        debug: //false
+        true
     }
 },
 //zoom: 2,
-scene: [ Title, DigChampsLevel1 ]
+scene: [ Title, DigChampsLevel1, GameOver]
 }
 
     //define game

@@ -90,7 +90,7 @@ class DigChampsLevel1 extends Phaser.Scene{
          // Set player origin to the center
          this.DigChampsP1V2.setOrigin(0.5, 0.5);
         this.DigChampsP1V2.setImmovable();
-        this.DigChampsP1V2.setMaxVelocity(600, 600);
+        this.DigChampsP1V2.setMaxVelocity(600, 400);
        //this.DigChampsP1V2.setDragX(200);
       // this.DigChampsP1V2.setDragY(200);
 
@@ -120,19 +120,33 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         // Create death animation for Player
         this.anims.create({
-            key: 'Death',
-            frameRate: 15,
-            //frameWidth: 86,
-           // frameHeight: 92,
+            key: 'DeathFlash',
+            frameRate: 6,
             frames: this.anims.generateFrameNumbers('Player1', {
             start: 3,
             end: 4,
             }),
-            repeat: -1,
+            repeat: 6,
+            onComplete: function (animation, frame, gameObject) {
+                // This function will be called when the animation completes
+                gameObject.setTexture('DeathFlash', frame.textureFrame); // Set sprite texture to the last frame
+            }
         });
 
+        // Create hit frame that plays after Player flashes 
+        this.anims.create({
+            key: 'HitFrame',
+            frameRate: 6,
+            frames: this.anims.generateFrameNumbers('Player1', {
+            start: 3,
+            end: 3,
+            }),
+            repeat: 1,
+        });
+
+
         //Add Snail enemy
-        this.Snail = this.physics.add.sprite(1500, 295, 'Snail', 0);
+        this.Snail = this.physics.add.sprite(500, 295, 'Snail', 0);
         //this.Snail.body.setCollideWorldBounds(true);
         this.Snail.setScale(0.9);
 
@@ -317,8 +331,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.P1LifeIcon2.setMaxVelocity(430, 0);
 
         this.LivesRemaining = 3;
-        
-       // this.P1LifeIcon = this.physics.add.sprite(this.cameras.main.scrollX, 430, 'LifeIcon');
 
         // LifeIcon group
         this.lifeCounterIcons = this.add.group({
@@ -387,16 +399,16 @@ class DigChampsLevel1 extends Phaser.Scene{
         if(this.DigChampsP1V2Alive){
 
         if (this.cursors.left.isDown) {
-            this.DigChampsP1V2.anims.play('Walk');
             this.DigChampsP1V2.setVelocityX(-speed);
             this.DigChampsP1V2.setFlipX(true); // Flip the sprite on the x-axis
+            this.DigChampsP1V2.anims.play('Walk', true);
 
             if(this.LivesRemaining > 1 && this.LivesRemaining <= 3 ){
-                this.P1LifeIcon.setVelocityX(-speed);
+                this.P1LifeIcon.setVelocityX(-speed); //Icon follows the player
             }
 
             if(this.LivesRemaining == 3 ){
-                this.P1LifeIcon2.setVelocityX(-speed);
+                this.P1LifeIcon2.setVelocityX(-speed); //Icon follows the player
             }
             
          // Scroll the background left
@@ -404,15 +416,15 @@ class DigChampsLevel1 extends Phaser.Scene{
          console.log('Player position:', this.DigChampsP1V2.x, this.DigChampsP1V2.y);
 
     } else if (this.cursors.right.isDown) {
-        this.DigChampsP1V2.anims.play('Walk');
         this.DigChampsP1V2.setVelocityX(speed);
         this.DigChampsP1V2.setFlipX(false); // Reset the flip
+        this.DigChampsP1V2.anims.play('Walk', true);
         if(this.LivesRemaining > 1 && this.LivesRemaining <= 3 ){
-            this.P1LifeIcon.setVelocityX(speed);
+            this.P1LifeIcon.setVelocityX(speed); //Icon follows the player
         }
 
         if(this.LivesRemaining == 3 ){
-            this.P1LifeIcon2.setVelocityX(speed);
+            this.P1LifeIcon2.setVelocityX(speed); //Icon follows the player
         }
 
         this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
@@ -420,18 +432,19 @@ class DigChampsLevel1 extends Phaser.Scene{
     } else {
         this.DigChampsP1V2.setVelocityX(0);
         if(this.LivesRemaining > 1 && this.LivesRemaining <= 3 ){
-            this.P1LifeIcon.setVelocityX(0);
+            this.P1LifeIcon.setVelocityX(0); //Icon follows the player
         }
 
         if(this.LivesRemaining == 3 ){
-            this.P1LifeIcon2.setVelocityX(0);
+            this.P1LifeIcon2.setVelocityX(0); //Icon follows the player
         }
         
-        //this.DigChampsP1V2.anims.stop('Player1');
+        
     }
 
     if (this.cursors.up.isDown && this.DigChampsP1V2.body.onFloor()) {
         this.DigChampsP1V2.setVelocityY(-500);
+        this.DigChampsP1V2.anims.stop();
     }
 
     if(this.cursors.space.isDown && this.DigChampsP1V2.body.onFloor()) {
@@ -475,8 +488,10 @@ class DigChampsLevel1 extends Phaser.Scene{
     handleCollision() {
         if(this.LivesRemaining == 3){
             this.P1LifeIcon.setVelocityX(0);
-            this.DigChampsP1V2.anims.play('Death');
+            this.DigChampsP1V2.anims.play('DeathFlash'); //Play death animation
              // Pause the game briefly
+            
+            //this.DigChampsP1V2.anims.play('Hitframe');   
     
             this.P1LifeIcon2.destroy();
             this.P1LifeIcon.x = 120;
@@ -488,7 +503,7 @@ class DigChampsLevel1 extends Phaser.Scene{
     
         this.DigChampsP1V2Alive = false;
         this.DigChampsMusic.stop();
-            //Play death animation
+            
             //this.sound.play('hitHurt', { volume: 0.2 }); 
             //this.sound.play('gameover', { volume: 0.2 }); 
             //this.DigChampsP1V2.destroy();
@@ -508,9 +523,11 @@ class DigChampsLevel1 extends Phaser.Scene{
     if (this.LivesRemaining == 0) {
         this.gameOver = true;
         
-        this.scene.start("gameOverScene");
+        this.time.delayedCall(2000, () => { 
+           // this.scene.physics.world.pause(); //Cannot read properties of undefined - Why does world not work???
+            this.scene.start("gameoverScene", { score: this.p1Score });
+        });
 
-        
     }//End of if statement
 
     }//End of handleCollision

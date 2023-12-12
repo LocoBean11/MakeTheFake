@@ -24,6 +24,11 @@ class DigChampsLevel1 extends Phaser.Scene{
             frameWidth: 80,
             frameHeight: 72
         })
+
+        this.load.spritesheet('invisibleBarrier', 'InvisibleBarrier.png', {
+            frameWidth: 234,
+            frameHeight: 480
+        })
         
         this.load.image('DigChampsBGImage', 'DigChampsBG.png');
         this.load.tilemapTiledJSON('DigChampsLevel1JSON', 'DigChampsLevel1.json');
@@ -120,18 +125,31 @@ class DigChampsLevel1 extends Phaser.Scene{
             repeat: 1,
         });
 
-        // Create digging animation for Player
+        //Create digging animation for Player
         this.anims.create({
             key: 'Dig',
             frameRate: 15,
-            frameWidth: 86,
-            frameHeight: 92,
+            //frameWidth: 120,
+           // frameHeight: 92,
             frames: this.anims.generateFrameNumbers('Player1', {
             start: 5,
             end: 5,
             }),
             repeat: 1,
+            repeat: 1,
+            onStart: function (animation, frame, DigChampsP1V2) {
+                // Replace the placeholder with the desired dimensions
+                 DigChampsP1V2.setSize(120, 92);
+                 DigChampsP1V2.setOrigin(0.5, 0.5); // Set the origin to the center
+            },
+            onComplete: function (animation, frame, DigChampsP1V2) {
+                // This function will be called when the animation completes
+                // You can reset the origin or perform other actions if needed
+                DigChampsP1V2.setSize(86, 92);
+                DigChampsP1V2.setOrigin(0.5, 0.5); // Set the origin to the center
+            }
         });
+       
 
         // Create death animation for Player
         this.anims.create({
@@ -142,9 +160,9 @@ class DigChampsLevel1 extends Phaser.Scene{
             end: 4,
             }),
             repeat: 6,
-            onComplete: function (animation, frame4, gameObject) {
+            onComplete: function (animation, frame, gameObject) {
                 // This function will be called when the animation completes
-                gameObject.setTexture('DeathFlash', frame4.textureFrame); // Set sprite texture to the last frame
+                gameObject.setTexture('DeathFlash', frame.textureFrame); // Set sprite texture to the last frame
             }
         });
 
@@ -396,6 +414,13 @@ class DigChampsLevel1 extends Phaser.Scene{
         //Check if player is still alive
         this.DigChampsP1V2Alive = true;
 
+        // invisible Barrier to prevent player from walking left when the game starts
+        this.InvisibleBarrier = this.physics.add.sprite(-100, 120, 'invisibleBarrier', 0);
+        this.InvisibleBarrier.setVisible(false); // Set the sprite to be invisible
+        this.InvisibleBarrier.setImmovable(); // Make the barrier immovable
+        this.physics.world.enable(this.InvisibleBarrier);
+        this.InvisibleBarrier.setMaxVelocity(1000, 0);
+
         //Create cursor keys
         this.cursors = this.input.keyboard.createCursorKeys();
     
@@ -404,7 +429,6 @@ class DigChampsLevel1 extends Phaser.Scene{
     update(){
         this.demonFollows();
         //this.direction = new Phaser.Math.Vector2(0)
-
         // Player movement logic
         if (this.allowPlayerMovement) {
         
@@ -412,7 +436,7 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         if(this.DigChampsP1V2Alive){
 
-        if (this.cursors.left.isDown) {
+        if (this.cursors.left.isDown && !this.physics.overlap(this.DigChampsP1V2, this.InvisibleBarrier)) {
             this.DigChampsP1V2.setVelocityX(-speed);
             this.DigChampsP1V2.setFlipX(true); // Flip the sprite on the x-axis
             this.DigChampsP1V2.anims.play('Walk', true);
@@ -462,6 +486,13 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     if(this.cursors.space.isDown && this.DigChampsP1V2.body.onFloor()) {
         this.DigChampsP1V2.anims.play('Dig');
+
+        // Check for enemies near the player
+        this.checkForEnemyDestroy();
+        
+        // Dynamically adjust the body size when the "Dig" animation is played
+        //this.DigChampsP1V2.body.setSize(120, 92); // Replace newWidth and newHeight with the desired dimensions
+        //this.DigChampsP1V2.setOrigin(0.5, 0.5);
         //this.DigChampsP1V2.anims.play('Idle');
     }
     
@@ -494,12 +525,55 @@ class DigChampsLevel1 extends Phaser.Scene{
     if (isPlayerCollidingWithBlock) {
     this.DigChampsP1V2.setVelocityX(0);
     this.P1LifeIcon.setVelocityX(0);
-    this.P1LifeIcon2.setVelocityX(0);
+    //this.P1LifeIcon2.setVelocityX(0);
     // Update the camera's scroll position based on the player's position
     this.cameras.main.scrollX = this.DigChampsP1V2.x - this.cameras.main.width / 4.5;
     }
-    
+
+    // If player is colliding with the block and space is pressed, destroy the block
+    if (isPlayerCollidingWithBlock && this.cursors.left.isDown) {
+        this.destroyBlock();
+    }
     }//End of update
+    
+    checkForEnemyDestroy() {
+        // Example: Check if player is near enemy1
+    if (
+        this.DigChampsP1V2.x < this.Snail.x + 10 &&
+        this.DigChampsP1V2.x > this.Snail.x - 10 &&
+        //this.DigChampsP1V2.y < this.Snail.y + this.nearDistance &&
+        //this.DigChampsP1V2.y > this.Snail.y - this.nearDistance &&
+        this.cursors.space.isDown
+    ) {
+        // Destroy or handle the enemy (replace with your logic)
+        this.Snail.destroy();
+    }
+
+    // Example: Check if player is near enemy2
+    if (
+        this.DigChampsP1V2.x < this.Worm.x + this.nearDistance &&
+        this.DigChampsP1V2.x > this.Worm.x - this.nearDistance &&
+        //this.DigChampsP1V2.y < this.Worm.y + this.nearDistance &&
+       // this.DigChampsP1V2.y > this.Worm.y - this.nearDistance &&
+        this.cursors.space.isDown
+    ) {
+        // Destroy or handle the enemy (replace with your logic)
+        this.Worm.destroy();
+    }
+
+    // Add similar checks for other enemies 
+    // Example: Check if player is near enemy2
+    if (
+        this.DigChampsP1V2.x < this.DemonSS.x + this.nearDistance &&
+        this.DigChampsP1V2.x > this.DemonSS.x - this.nearDistance &&
+        //this.DigChampsP1V2.y < this.Worm.y + this.nearDistance &&
+       // this.DigChampsP1V2.y > this.Worm.y - this.nearDistance &&
+        this.cursors.space.isDown
+    )   {
+        // Destroy or handle the enemy (replace with your logic)
+        this.DemonSS.destroy();
+        }
+    }//End of checkForEnemyCollision
     
    // }
    // handleBackgroundLoop() {
@@ -577,6 +651,17 @@ class DigChampsLevel1 extends Phaser.Scene{
     
     }//End of Block Collision
 
+    // Method to destroy the block
+    destroyBlock() {
+    // Add any additional logic you may need before destroying the block
+    // For example, playing a sound or adding score points
+
+    // Destroy the block
+    this.Block.destroy();
+
+    // You may also want to respawn the block or handle any other game logic
+    }
+
      // Resets the game if the player loses a life
      resetGame() {
 
@@ -591,16 +676,6 @@ class DigChampsLevel1 extends Phaser.Scene{
     this.LivesRemaining = 3;
 
     this.scene.start("digchampslevel1Scene"); 
-
-    // Reset life counter images
-   // this.lifeCounterGroup.clear(true, true); // Clear and destroy existing images
-
-    // Create new life counter images
-    //this.lifeCounterGroup.createMultiple({
-    //    key: 'lifeImage', // Replace 'lifeImage' with the key of your life counter image
-     //   repeat: this.playerLives - 1, // Set the number of initial lives
-     //   setXY: { x: 16, y: 16, stepX: 40 } // Adjust the spacing between life images
-   // });
     
     }//End of restartGame
     

@@ -106,7 +106,7 @@ class DigChampsLevel1 extends Phaser.Scene{
       // Create idle animation for Player
       this.anims.create({
         key: 'Idle',
-        frameRate: 15,
+        frameRate: 1,
         frames: this.anims.generateFrameNumbers('Player1', {
         start: 1,
         end: 1,
@@ -128,30 +128,22 @@ class DigChampsLevel1 extends Phaser.Scene{
         //Create digging animation for Player
         this.anims.create({
             key: 'Dig',
+            frameWidth: 120,
+            frameHeight: 92,
             frameRate: 15,
-            //frameWidth: 120,
-           // frameHeight: 92,
             frames: this.anims.generateFrameNumbers('Player1', {
             start: 5,
             end: 5,
-            }),
             repeat: 1,
-            repeat: 1,
-            onStart: function (animation, frame, DigChampsP1V2) {
-                // Replace the placeholder with the desired dimensions
-                 DigChampsP1V2.setSize(120, 92);
-                 DigChampsP1V2.setOrigin(0.5, 0.5); // Set the origin to the center
+            onComplete: function () {
+              this.DigChampsP1V2.anims.stop('Dig', false);
+              this.DigChampsP1V2.anims.play('Walk', true);
             },
-            onComplete: function (animation, frame, DigChampsP1V2) {
-                // This function will be called when the animation completes
-                // You can reset the origin or perform other actions if needed
-                DigChampsP1V2.setSize(86, 92);
-                DigChampsP1V2.setOrigin(0.5, 0.5); // Set the origin to the center
-            }
+            callbackScope: this,
+            }),
         });
-       
 
-        // Create death animation for Player
+        // Create death flash animation for Player
         this.anims.create({
             key: 'DeathFlash',
             frameRate: 6,
@@ -160,10 +152,6 @@ class DigChampsLevel1 extends Phaser.Scene{
             end: 4,
             }),
             repeat: 6,
-            onComplete: function (animation, frame, gameObject) {
-                // This function will be called when the animation completes
-                gameObject.setTexture('DeathFlash', frame.textureFrame); // Set sprite texture to the last frame
-            }
         });
 
         // Create hit frame that plays after Player flashes 
@@ -440,6 +428,7 @@ class DigChampsLevel1 extends Phaser.Scene{
             this.DigChampsP1V2.setVelocityX(-speed);
             this.DigChampsP1V2.setFlipX(true); // Flip the sprite on the x-axis
             this.DigChampsP1V2.anims.play('Walk', true);
+            this.DigChampsP1V2.body.setSize(87, 92);
 
             if(this.LivesRemaining > 1 && this.LivesRemaining <= 3 ){
                 this.P1LifeIcon.setVelocityX(-speed); //Icon follows the player
@@ -457,6 +446,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.DigChampsP1V2.setVelocityX(speed);
         this.DigChampsP1V2.setFlipX(false); // Reset the flip
         this.DigChampsP1V2.anims.play('Walk', true);
+        this.DigChampsP1V2.body.setSize(87, 92);
+
         if(this.LivesRemaining > 1 && this.LivesRemaining <= 3 ){
             this.P1LifeIcon.setVelocityX(speed); //Icon follows the player
         }
@@ -481,20 +472,21 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     if (this.cursors.up.isDown && this.DigChampsP1V2.body.onFloor()) {
         this.DigChampsP1V2.setVelocityY(-500);
-        this.DigChampsP1V2.anims.stop();
+        this.DigChampsP1V2.anims.play('Idle');
     }
 
-    if(this.cursors.space.isDown && this.DigChampsP1V2.body.onFloor()) {
+    if (this.cursors.space.isDown && this.DigChampsP1V2.body.onFloor()) {
+        this.DigChampsP1V2.body.setSize(120, 92);
         this.DigChampsP1V2.anims.play('Dig');
+
+       //this.DigChampsP1V2.body.setFrameWidth(87);
+        //this.DigChampsP1V2.body.setFrameHeight(92);
+        this.DigChampsP1V2.setOrigin(0.5, 0.5);
 
         // Check for enemies near the player
         this.checkForEnemyDestroy();
         
-        // Dynamically adjust the body size when the "Dig" animation is played
-        //this.DigChampsP1V2.body.setSize(120, 92); // Replace newWidth and newHeight with the desired dimensions
-        //this.DigChampsP1V2.setOrigin(0.5, 0.5);
-        //this.DigChampsP1V2.anims.play('Idle');
-    }
+    }//End of if statment
     
 }//End of Player movement logic
 
@@ -539,7 +531,7 @@ class DigChampsLevel1 extends Phaser.Scene{
     checkForEnemyDestroy() {
         // Example: Check if player is near enemy1
     if (
-        this.DigChampsP1V2.x < this.Snail.x + 10 &&
+        this.DigChampsP1V2.x < this.Snail.x + 1 &&
         this.DigChampsP1V2.x > this.Snail.x - 10 &&
         //this.DigChampsP1V2.y < this.Snail.y + this.nearDistance &&
         //this.DigChampsP1V2.y > this.Snail.y - this.nearDistance &&
@@ -590,6 +582,10 @@ class DigChampsLevel1 extends Phaser.Scene{
             this.P1LifeIcon.setVelocityX(0);
             this.DigChampsP1V2.anims.play('DeathFlash'); //Play death animation
             this.DCGameOverSE.play();
+            
+            setTimeout(() => {
+                this.allowPlayerMovement = true;
+                }, 100);
 
              // Pause the game briefly
             
@@ -679,4 +675,7 @@ class DigChampsLevel1 extends Phaser.Scene{
     
     }//End of restartGame
     
+    //Pause button?
+    //this.scene.pause();
+    //this.scene.resume();
 }//End of class

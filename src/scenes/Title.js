@@ -6,6 +6,32 @@ class Title extends Phaser.Scene {
 
     preload() {
       this.load.path = './assets/';
+
+      this.load.spritesheet('TitleBG', 'DigChampsTitleBG.png', {
+        frameWidth: 740,
+        frameHeight: 480
+      })
+
+      this.load.spritesheet('Player1Title', 'DigChampsPlayerTS.png', {
+        frameWidth: 60,
+        frameHeight: 140
+      })
+
+      this.load.spritesheet('Player2Title', 'DigChampsPlayer2TS.png', {
+        frameWidth: 126,
+        frameHeight: 105
+      })
+
+      this.load.spritesheet('SnailTS', 'SnailTS.png', {
+        frameWidth: 146,
+        frameHeight: 116
+      })
+
+    this.load.spritesheet('WormTS', 'WormTS.png', {
+      frameWidth: 88,
+      frameHeight: 131
+    })
+
       this.load.spritesheet('PressSpace', 'SpaceButtonText.png', {
         frameWidth: 207,
         frameHeight: 29
@@ -19,7 +45,81 @@ class Title extends Phaser.Scene {
   }//End of preload
 
 create() {
-  //this.add.image(0, 0, 'title').setOrigin(0, 0);
+  this.DigChampsTitleBG = this.add.sprite(370, 240, 'TitleBG', 0);
+/*
+  //Add the players that appear on title screen
+  this.DigChampsPlayerTS = this.physics.add.sprite(400, 395, 'Player1Title', 0);
+  // this.DigChampsP1V2.body.setCollideWorldBounds(true);
+   this.DigChampsPlayerTS.setScale(1.7);
+
+   //Set up other properties for the player
+
+   this.physics.world.enable(this.DigChampsPlayerTS);
+   // Set player physics body size in pixels
+   this.DigChampsPlayerTS.body.setSize(50, 100); 
+    // Set player origin to the center
+    this.DigChampsPlayerTS.setOrigin(0.5, 0.5);
+   this.DigChampsPlayerTS.setImmovable();
+   this.DigChampsPlayerTS.setMaxVelocity(600, 0);
+
+   // Create walking animation for Player 1
+   this.anims.create({
+    key: 'Walking',
+    frameRate: 15,
+    frames: this.anims.generateFrameNumbers('Player1Title', {
+    start: 0,
+    end: 5,
+    }),
+    repeat: -1,
+    yoyo: true,
+    });
+    this.DigChampsPlayerTS.anims.play('Walking');
+*/
+   this.DigChampsPlayer2TS = this.physics.add.sprite(490, 310, 'Player2Title', 0);
+  // this.DigChampsP1V2.body.setCollideWorldBounds(true);
+   this.DigChampsPlayer2TS.setScale(1.7);
+
+   //Set up other properties for the player
+
+   this.physics.world.enable(this.DigChampsPlayer2TS);
+   // Set player physics body size in pixels
+   this.DigChampsPlayer2TS.body.setSize(125, 105); 
+    // Set player origin to the center
+    this.DigChampsPlayer2TS.setOrigin(0.5, 0.5);
+   this.DigChampsPlayer2TS.setImmovable();
+   this.DigChampsPlayer2TS.setMaxVelocity(600, 0);
+
+   // Create walking animation for Player 2
+
+   // Define spaceButtonTween in the outer scope
+  let player2TSanimation;
+
+  // Function to restart the tween
+  const restartAnimation = () => {
+    this.DigChampsPlayer2TS.anims.restart();
+  };
+
+   this.anims.create({
+    key: 'Walking2',
+    frameRate: 14,
+    frames: this.anims.generateFrameNumbers('Player2Title', {
+    //duration: 1000,
+    delay: 5000,
+    start: 1,
+    end: 5,
+    }),
+    repeat: -1,
+    });
+    this.DigChampsPlayer2TS.anims.play('Walking2');
+
+    // Set up a delayed call to restart the animation after a certain time
+  this.time.delayedCall(3000, restartAnimation);
+
+  this.SnailTS = this.add.sprite(640, 335, 'SnailTS', 0);
+  this.SnailTS.setScale(0.8);
+
+  this.WormTS = this.add.sprite(100, 330, 'WormTS', 0);
+  this.WormTS.setScale(0.8);
 
   //Sounds and looping BGM
   this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
@@ -33,7 +133,7 @@ create() {
   titleText.setOrigin(0.5, 0.5); // Center the text
 
   // Add Press Space text
-  this.SpaceButtonText = this.add.sprite(365, 400, 'PressSpace');
+  this.SpaceButtonText = this.add.sprite(365, 430, 'PressSpace');
   this.SpaceButtonText.setScale(1.4);
 
   // Define spaceButtonTween in the outer scope
@@ -69,6 +169,7 @@ create() {
 }
 
       update() {
+        
       if (this.cursors.space.isDown) {
         //this.sound.play('select', { volume: 0.2 }); 
         this.scene.start("digchampslevel1Scene"); 

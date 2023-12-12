@@ -7,8 +7,8 @@ class Title extends Phaser.Scene {
     preload() {
       this.load.path = './assets/';
       this.load.spritesheet('PressSpace', 'SpaceButtonText.png', {
-        frameWidth: 185,
-        frameHeight: 28
+        frameWidth: 207,
+        frameHeight: 29
     })
 
       // Load audio based on object properties in the tilemap
@@ -16,9 +16,7 @@ class Title extends Phaser.Scene {
   this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
   this.load.audio('SoundEffect', 'DigChampsSelectSfx.wav');
   
-  }
-
-  
+  }//End of preload
 
 create() {
   //this.add.image(0, 0, 'title').setOrigin(0, 0);
@@ -27,7 +25,7 @@ create() {
   this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
   this.DigChampsSelectSfx = this.sound.add('SoundEffect', { loop: false });
   this.DigChampsMusic.play();
-  this.DigChampsMusic.setVolume(0.1);
+  this.DigChampsMusic.setVolume(0.2);
 
   const titleText = this.add.text(360, 210, "DIG CHAMPS");
   //titleText.fontFamily = 'Times New Roman';
@@ -36,8 +34,36 @@ create() {
 
   // Add Press Space text
   this.SpaceButtonText = this.add.sprite(365, 400, 'PressSpace');
-  this.SpaceButtonText.setScale(1);
+  this.SpaceButtonText.setScale(1.4);
 
+  // Define spaceButtonTween in the outer scope
+  let spaceButtonTween;
+
+   // Function to restart the tween
+   const restartTween = () => {
+    spaceButtonTween.restart();
+  };
+
+  spaceButtonTween = this.tweens.add({
+    targets: this.SpaceButtonText,
+    alpha: { from: 1, to: 0 },
+    duration: 100,
+    delay: 1000,
+    ease: 'Sine.InOut',
+    repeat: -1,
+    yoyo: true,
+  });
+
+  // Set up a delayed call to restart the tween after a certain time
+  this.time.delayedCall(3000, restartTween);
+
+   // Set up a delayed call to restart the tween after a certain time
+   //this.time.delayedCall(4000, () => {
+  //  spaceButtonTween.restart();
+  //});
+  
+  //End of SpaceTextButton tween
+  
       //Define cursor keys
       this.cursors = this.input.keyboard.createCursorKeys();
 }

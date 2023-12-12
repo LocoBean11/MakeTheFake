@@ -4,7 +4,6 @@ class DigChampsLevel1 extends Phaser.Scene{
     }
 
     preload() {
-        //this.load.image('Player1', './assets/DigChampsP1Single.png');
         this.load.path = './assets/';
 
         this.load.spritesheet('Player1', 'DigChampsP1V2.png', {frameWidth: 87,  frameHeight: 92 })
@@ -33,6 +32,9 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.load.path = './assets/audio/';
         this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
 
+        this.load.path = './assets/audio/';
+        this.load.audio('Hit', 'DCGameOverSE.wav');
+
         }//End of preload
 
          // Define a function to check for collisions
@@ -51,8 +53,9 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.VEL = 100;
 
         //Sounds and looping BGM
-        this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
-
+        this.DigChampsMusic = this.sound.add('DigChampsBGM');
+        this.DCGameOverSE = this.sound.add('Hit');
+        
         //Tilemap info
         const map = this.add.tilemap('DigChampsLevel1JSON');
         const tileset = map.addTilesetImage('DigChampsBG', 'DigChampsBGImage');
@@ -77,7 +80,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.backgroundWidth = bgLayer.width;
 
         groundLayer.setScrollFactor(0); // Fix the background layer
-    
+        
+        //Add the player
         this.DigChampsP1V2 = this.physics.add.sprite(200, 275, 'Player1', 0);
        // this.DigChampsP1V2.body.setCollideWorldBounds(true);
         this.DigChampsP1V2.setScale(1.7);
@@ -94,6 +98,17 @@ class DigChampsLevel1 extends Phaser.Scene{
        //this.DigChampsP1V2.setDragX(200);
       // this.DigChampsP1V2.setDragY(200);
 
+      // Create idle animation for Player
+      this.anims.create({
+        key: 'Idle',
+        frameRate: 15,
+        frames: this.anims.generateFrameNumbers('Player1', {
+        start: 1,
+        end: 1,
+        }),
+        repeat: 1,
+    });
+    
         // Create walking animation for Player
         this.anims.create({
             key: 'Walk',
@@ -127,9 +142,9 @@ class DigChampsLevel1 extends Phaser.Scene{
             end: 4,
             }),
             repeat: 6,
-            onComplete: function (animation, frame, gameObject) {
+            onComplete: function (animation, frame4, gameObject) {
                 // This function will be called when the animation completes
-                gameObject.setTexture('DeathFlash', frame.textureFrame); // Set sprite texture to the last frame
+                gameObject.setTexture('DeathFlash', frame4.textureFrame); // Set sprite texture to the last frame
             }
         });
 
@@ -143,7 +158,7 @@ class DigChampsLevel1 extends Phaser.Scene{
             }),
             repeat: 1,
         });
-
+        //End of Player animations
 
         //Add Snail enemy
         this.Snail = this.physics.add.sprite(500, 295, 'Snail', 0);
@@ -388,7 +403,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         
     update(){
         this.demonFollows();
-
         //this.direction = new Phaser.Math.Vector2(0)
 
         // Player movement logic
@@ -439,7 +453,6 @@ class DigChampsLevel1 extends Phaser.Scene{
             this.P1LifeIcon2.setVelocityX(0); //Icon follows the player
         }
         
-        
     }
 
     if (this.cursors.up.isDown && this.DigChampsP1V2.body.onFloor()) {
@@ -449,6 +462,7 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     if(this.cursors.space.isDown && this.DigChampsP1V2.body.onFloor()) {
         this.DigChampsP1V2.anims.play('Dig');
+        //this.DigChampsP1V2.anims.play('Idle');
     }
     
 }//End of Player movement logic
@@ -473,6 +487,18 @@ class DigChampsLevel1 extends Phaser.Scene{
     
 }//End of PlayerAllowedMovement
 
+    //Check if player is colliding with block
+    const isPlayerCollidingWithBlock = this.physics.collide(this.DigChampsP1V2, this.Block);
+
+    // If true, stop player movement
+    if (isPlayerCollidingWithBlock) {
+    this.DigChampsP1V2.setVelocityX(0);
+    this.P1LifeIcon.setVelocityX(0);
+    this.P1LifeIcon2.setVelocityX(0);
+    // Update the camera's scroll position based on the player's position
+    this.cameras.main.scrollX = this.DigChampsP1V2.x - this.cameras.main.width / 4.5;
+    }
+    
     }//End of update
     
    // }
@@ -489,6 +515,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         if(this.LivesRemaining == 3){
             this.P1LifeIcon.setVelocityX(0);
             this.DigChampsP1V2.anims.play('DeathFlash'); //Play death animation
+            this.DCGameOverSE.play();
+
              // Pause the game briefly
             
             //this.DigChampsP1V2.anims.play('Hitframe');   
@@ -498,11 +526,13 @@ class DigChampsLevel1 extends Phaser.Scene{
         }
 
         if(this.LivesRemaining == 2){
+            this.DigChampsP1V2.anims.play('DeathFlash'); //Play death animation
+            this.DCGameOverSE.play();
             this.P1LifeIcon.destroy();
         }
     
         this.DigChampsP1V2Alive = false;
-        this.DigChampsMusic.stop();
+        this.sound.removeByKey('DigChampsBGM');
             
             //this.sound.play('hitHurt', { volume: 0.2 }); 
             //this.sound.play('gameover', { volume: 0.2 }); 
@@ -521,11 +551,14 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     // Check for GAME OVER
     if (this.LivesRemaining == 0) {
+        this.DigChampsP1V2.anims.play('DeathFlash'); //Play death animation
+        this.DCGameOverSE.play();
         this.gameOver = true;
         
         this.time.delayedCall(2000, () => { 
            // this.scene.physics.world.pause(); //Cannot read properties of undefined - Why does world not work???
             this.scene.start("gameoverScene", { score: this.p1Score });
+            
         });
 
     }//End of if statement
@@ -540,7 +573,8 @@ class DigChampsLevel1 extends Phaser.Scene{
 
      // Callback function for collision between block and sprites
      handleBlockCollision() {
-        
+        // Check for collision between player and block
+    
     }//End of Block Collision
 
      // Resets the game if the player loses a life

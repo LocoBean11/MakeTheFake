@@ -7,16 +7,32 @@ class GameOver extends Phaser.Scene {
     //    this.P1score = data.P1score;
    // }
     preload(){
+        this.load.path = './assets/';
         this.load.spritesheet('GameOver', 'DCGameOverScreen.png', {
             frameWidth: 740,
             frameHeight: 480
         })
+        this.load.spritesheet('GameOverText', 'GameOverText.png', {
+            frameWidth: 740,
+            frameHeight: 480
+        })
+
+        // Load audio 
+        this.load.path = './assets/audio/';
+        this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
 
     }//End of preload
 
 create() {
-    this.add.sprite(740, 480, 'GameOver', 0);
+    //Sounds and looping BGM
+    this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: false });
+    this.DigChampsMusic.stop();
+
+    this.DCGameOverScreen = this.add.sprite(370, 240, 'GameOver', 0);
     
+    // Add Press Space text
+    this.GameOverText = this.add.sprite(360, 220, 'GameOverText');
+    this.GameOverText.setScale(1.6);
 /*
     const gameOverText = this.add.text(320, 100, "GAME OVER");
     gameOverText.setFontSize(48); // Set the desired font size
@@ -32,14 +48,13 @@ create() {
   }
 
   update() {
-    this.time.delayedCall(2500, () => { 
-        if (this.cursors.space.isDown) {
-        //this.sound.play('select', { volume: 0.2 }); 
+    this.sound.removeByKey('DigChampsBGM'); // This worked!!!
+    this.time.delayedCall(4000, () => { 
         this.scene.start("titleScene");
-      }
+     
         
     });
     
-    
-  }
-}
+  }//End of update
+
+}//End of GameOver

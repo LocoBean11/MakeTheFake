@@ -12,12 +12,12 @@ class Title extends Phaser.Scene {
         frameHeight: 480
       })
 
-      this.load.spritesheet('Player1Title', 'DigChampsPlayerTS.png', {
-        frameWidth: 60,
-        frameHeight: 140
+      this.load.spritesheet('Player1TS', 'DigChampsPlayerTS.png', {
+        frameWidth: 112,
+        frameHeight: 110
       })
 
-      this.load.spritesheet('Player2Title', 'DigChampsPlayer2TS.png', {
+      this.load.spritesheet('Player2TS', 'DigChampsPlayer2TS.png', {
         frameWidth: 126,
         frameHeight: 105
       })
@@ -46,36 +46,25 @@ class Title extends Phaser.Scene {
 
 create() {
   this.DigChampsTitleBG = this.add.sprite(370, 240, 'TitleBG', 0);
-/*
+
   //Add the players that appear on title screen
-  this.DigChampsPlayerTS = this.physics.add.sprite(400, 395, 'Player1Title', 0);
-  // this.DigChampsP1V2.body.setCollideWorldBounds(true);
+
+  this.DigChampsPlayerTS = this.physics.add.sprite(250, 305, 'Player1TS', 0);
+  // this.DigChampsPlayerTS.body.setCollideWorldBounds(true);
    this.DigChampsPlayerTS.setScale(1.7);
 
    //Set up other properties for the player
 
    this.physics.world.enable(this.DigChampsPlayerTS);
    // Set player physics body size in pixels
-   this.DigChampsPlayerTS.body.setSize(50, 100); 
+   this.DigChampsPlayerTS.body.setSize(110, 110); 
     // Set player origin to the center
     this.DigChampsPlayerTS.setOrigin(0.5, 0.5);
    this.DigChampsPlayerTS.setImmovable();
    this.DigChampsPlayerTS.setMaxVelocity(600, 0);
 
-   // Create walking animation for Player 1
-   this.anims.create({
-    key: 'Walking',
-    frameRate: 15,
-    frames: this.anims.generateFrameNumbers('Player1Title', {
-    start: 0,
-    end: 5,
-    }),
-    repeat: -1,
-    yoyo: true,
-    });
-    this.DigChampsPlayerTS.anims.play('Walking');
-*/
-   this.DigChampsPlayer2TS = this.physics.add.sprite(490, 310, 'Player2Title', 0);
+
+   this.DigChampsPlayer2TS = this.physics.add.sprite(490, 310, 'Player2TS', 0);
   // this.DigChampsP1V2.body.setCollideWorldBounds(true);
    this.DigChampsPlayer2TS.setScale(1.7);
 
@@ -89,22 +78,43 @@ create() {
    this.DigChampsPlayer2TS.setImmovable();
    this.DigChampsPlayer2TS.setMaxVelocity(600, 0);
 
-   // Create walking animation for Player 2
+   // Create walking animations for Player 1
+   let player1TSanimation;
 
-   // Define spaceButtonTween in the outer scope
+   const restartAnimation1 = () => {
+    this.DigChampsPlayerTS.anims.restart();
+  };
+
+   this.anims.create({
+    key: 'Walking1',
+    frameRate: 16,
+    delay: 1000,
+    duration: 1000,
+    frames: this.anims.generateFrameNumbers('Player1TS', {
+    start: 1,
+    end: 5,
+    }),
+    repeat: -1,
+    yoyo: true,
+    });
+    this.DigChampsPlayerTS.anims.play('Walking1');
+
+  this.time.delayedCall(3000, restartAnimation1);
+
+  // Create walking animation for Player 2
   let player2TSanimation;
 
   // Function to restart the tween
-  const restartAnimation = () => {
+  const restartAnimation2 = () => {
     this.DigChampsPlayer2TS.anims.restart();
   };
 
    this.anims.create({
     key: 'Walking2',
     frameRate: 14,
-    frames: this.anims.generateFrameNumbers('Player2Title', {
-    //duration: 1000,
-    delay: 5000,
+    delay: 1000,
+    duration: 1000,
+    frames: this.anims.generateFrameNumbers('Player2TS', {
     start: 1,
     end: 5,
     }),
@@ -112,9 +122,9 @@ create() {
     });
     this.DigChampsPlayer2TS.anims.play('Walking2');
 
-    // Set up a delayed call to restart the animation after a certain time
-  this.time.delayedCall(3000, restartAnimation);
+  this.time.delayedCall(3000, restartAnimation2);
 
+  //Add enemies
   this.SnailTS = this.add.sprite(640, 335, 'SnailTS', 0);
   this.SnailTS.setScale(0.8);
 
@@ -127,7 +137,7 @@ create() {
   this.DigChampsMusic.play();
   this.DigChampsMusic.setVolume(0.2);
 
-  const titleText = this.add.text(360, 210, "DIG CHAMPS");
+  const titleText = this.add.text(360, 150, "DIG CHAMPS");
   //titleText.fontFamily = 'Times New Roman';
   titleText.setFontSize(20); 
   titleText.setOrigin(0.5, 0.5); // Center the text

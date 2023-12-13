@@ -31,8 +31,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         })
 
         this.load.spritesheet('Cave', 'CaveOpening.png', {
-            frameWidth: 199,
-            frameHeight: 305
+            frameWidth: 672,
+            frameHeight: 369
         })
         
         this.load.image('DigChampsBGImage', 'DigChampsBG.png');
@@ -43,6 +43,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
         this.load.audio('Hit', 'DCGameOverSE.wav');
         this.load.audio('Jingle', 'DCGameOverJingle.wav');
+        this.load.audio('Jump', 'DigChampsP1Jump.wav');
 
         }//End of preload
 
@@ -68,6 +69,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.DigChampsMusic = this.sound.add('DigChampsBGM');
         this.DCGameOverSE = this.sound.add('Hit');
         this.DCGameOverJingle = this.sound.add('Jingle');
+        this.DigChampsP1Jump = this.sound.add('Jump');
         
         //Tilemap info
         const map = this.add.tilemap('DigChampsLevel1JSON');
@@ -176,12 +178,31 @@ class DigChampsLevel1 extends Phaser.Scene{
         });
         //End of Player animations
 
+        //Add Block
+        this.Block = this.physics.add.sprite(1500, 317, 'Block', 0);
+        this.Block.setScale(1);
+
+        this.physics.world.enable(this.Block);
+        this.Block.setImmovable(true);
+        // Set Block physics body size
+        this.Block.body.setSize(80, 72);
+         // Set Block origin to the center
+         this.Block.setOrigin(0.5, 0.5);
+        //this.Block.setVelocityX(100, 0);
+        this.Block.setMaxVelocity(100, 0);
+        
+        //Collision between Player and Block
+       this.physics.world.enable([this.DigChampsP1V2, this.Block]);
+
+       // Set up collision between player and block
+       this.physics.add.collider(this.DigChampsP1V2, this.Block, this.handleBlockCollision, null, this);
+        //Add multiple blocks!
+       
         //Add Snail enemy
-        this.Snail = this.physics.add.sprite(500, 295, 'Snail', 0);
+        this.Snail = this.physics.add.sprite(1000, 295, 'Snail', 0);
         //this.Snail.body.setCollideWorldBounds(true);
         this.Snail.setScale(0.9);
 
-        //this.Snail.setGravityY(0);
         this.physics.world.enable(this.Snail);
         // Set snail physics body size
         this.Snail.body.setSize(167, 121);
@@ -196,9 +217,10 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         // Set up collision between player and snail
         this.physics.add.collider(this.DigChampsP1V2, this.Snail, this.handleCollision, null, this);
+        //Snail moves so slowly it's more of an obstacle than an enemy, only needs collision with player
 
         //Add Worm enemy
-        this.Worm = this.physics.add.sprite(4000, 340, 'Worm', 0); 
+        this.Worm = this.physics.add.sprite(2000, 340, 'Worm', 0); 
         //The Worm's placement on the Y-axis is intentional to make it seem as if it is burrowing through the ground
         //this.Worm.body.setCollideWorldBounds(true);
         this.Worm.setScale(0.9);
@@ -223,7 +245,13 @@ class DigChampsLevel1 extends Phaser.Scene{
        this.physics.world.enable([this.Snail, this.Worm]);
 
        // Set up collision between Snail and Worm
-       this.physics.add.collider(this.Snail, this.Worm, this.handleEnemyCollision, null, this);
+       this.physics.add.collider(this.Snail, this.Worm, this.handleBlockCollision, null, this);
+
+       //Collision between Blcok and Worm
+       this.physics.world.enable([this.Block, this.Worm]);
+
+       // Set up collision between Block and Worm
+       this.physics.add.collider(this.Block, this.Worm, this.handleBlockCollision, null, this);
 
         //Add Demon enemy
         this.DemonSS = this.physics.add.sprite(6000, 280, 'Demon', 100);
@@ -292,35 +320,15 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.physics.world.bounds.width = groundLayer.width;
         this.physics.world.bounds.height = groundLayer.height;
 
-        //Add Block
-        this.Block = this.physics.add.sprite(1000, 317, 'Block', 0);
-        this.Block.setScale(1);
-
-        this.physics.world.enable(this.Block);
-        this.Block.setImmovable(true);
-        // Set Block physics body size
-        this.Block.body.setSize(80, 72);
-         // Set Block origin to the center
-         this.Block.setOrigin(0.5, 0.5);
-        
-        //this.Block.setVelocityX(100, 0);
-        this.Block.setMaxVelocity(100, 0);
-        
-        //Collision between Player and Block
-       this.physics.world.enable([this.DigChampsP1V2, this.Block]);
-
-       // Set up collision between player and block
-       this.physics.add.collider(this.DigChampsP1V2, this.Block, this.handleBlockCollision, null, this);
-
       //this.physics.world.bounds.width = this.Block.width; //Possible solution to be able to stand on block
-      this.CaveOpening = this.physics.add.sprite(8000, 170, 'Cave', 0);
+      this.CaveOpening = this.physics.add.sprite(8400, 132, 'Cave', 0);
       // this.DigChampsP1V2.body.setCollideWorldBounds(true);
       this.CaveOpening.setScale(1.2);
 
       //Set up other properties for the cave
       this.physics.world.enable(this.CaveOpening);
       // Set player physics body size in pixels
-      this.CaveOpening.body.setSize(199, 10); 
+      this.CaveOpening.body.setSize(700, 75); 
        // Set player origin to the center
        //this.CaveOpening.setOrigin(0.5, 1);
       this.CaveOpening.setImmovable(true);
@@ -554,7 +562,7 @@ class DigChampsLevel1 extends Phaser.Scene{
     if (this.cursors.up.isDown) { 
         if(this.DigChampsP1V2.body.onFloor() || this.physics.overlap(this.DigChampsP1V2, this.Block)) {
        // this.DigChampsP1V2.anims.play('Idle');
-        this.DigChampsP1V2.setVelocityY(-500);
+       this.DigChampsP1Jump.play();
         //this.DigChampsP1V2.anims.play('Idle');
         }
     }
@@ -581,7 +589,10 @@ class DigChampsLevel1 extends Phaser.Scene{
     // Snail movement
     this.Snail.x -= 0.01;
     if(!this.EnemyCollision){
-    this.Worm.x -= 3;
+        this.Worm.x -= 3;
+    }
+    if(!this.BlockCollision){
+        this.Worm.x -= 3;
     }
     else {
         this.Worm.x += 3;
@@ -606,15 +617,11 @@ class DigChampsLevel1 extends Phaser.Scene{
     }
 
     // Example code to handle player standing on the block
-    if (
-        this.DigChampsP1V2.body.onFloor() &&
-        Phaser.Geom.Intersects.RectangleToRectangle(
-            this.DigChampsP1V2.getBounds(),
-            this.Block.getBounds()
-        )
-    ) {
+    if (this.DigChampsP1V2.body.onFloor() && Phaser.Geom.Intersects.RectangleToRectangle(
+        this.DigChampsP1V2.getBounds(), this.Block.getBounds())) 
+        {
         this.DigChampsP1V2.setVelocityY(0); // Stop vertical movement
-    }
+        }
 
     // If player is colliding with the block and space is pressed, destroy the block
     if (isPlayerCollidingWithBlock && this.cursors.space.isDown) {
@@ -726,8 +733,8 @@ class DigChampsLevel1 extends Phaser.Scene{
 
      // Callback function for collision between block and sprites
      handleBlockCollision() {
-        // Check for collision between player and block
-    
+        this.Worm.setFlipX(true); // Flip the sprite on the x-axix
+        this.BlockCollision = !this.BlockCollision;
     }//End of Block Collision
 
     destroyBlock() {

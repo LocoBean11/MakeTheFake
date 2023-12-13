@@ -13,7 +13,7 @@ physics: {
     default: "arcade",
     arcade: {
         gravity: {
-            y: 500
+            y: 900
         },
         debug: //false
         true

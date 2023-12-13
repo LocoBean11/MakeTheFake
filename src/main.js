@@ -1,6 +1,6 @@
 //Aaron Rodriguez
 //Game Title: Dig Champs
-//
+//Phaser 3 components used: Physics system, text objects, animation manager, tween manager, 
 
 let config = {
     type: Phaser.AUTO,
@@ -20,7 +20,7 @@ physics: {
     }
 },
 //zoom: 2,
-scene: [ Title, DigChampsLevel1, GameOver]
+scene: [ Title, DigChampsLevel1, GameOver, WinScreen]
 }
 
     //define game

@@ -25,7 +25,7 @@ class GameOver extends Phaser.Scene {
 
 create() {
     //Sounds and looping BGM
-    this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: false });
+    this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
     this.DigChampsMusic.stop();
 
     this.DCGameOverScreen = this.add.sprite(370, 240, 'GameOver', 0);

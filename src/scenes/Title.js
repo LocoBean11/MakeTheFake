@@ -49,7 +49,7 @@ create() {
 
   //Add the players that appear on title screen
 
-  this.DigChampsPlayerTS = this.physics.add.sprite(250, 305, 'Player1TS', 0);
+  this.DigChampsPlayerTS = this.physics.add.sprite(250, 315, 'Player1TS', 0);
   // this.DigChampsPlayerTS.body.setCollideWorldBounds(true);
    this.DigChampsPlayerTS.setScale(1.7);
 
@@ -64,7 +64,7 @@ create() {
    this.DigChampsPlayerTS.setMaxVelocity(600, 0);
 
 
-   this.DigChampsPlayer2TS = this.physics.add.sprite(490, 310, 'Player2TS', 0);
+   this.DigChampsPlayer2TS = this.physics.add.sprite(490, 320, 'Player2TS', 0);
   // this.DigChampsP1V2.body.setCollideWorldBounds(true);
    this.DigChampsPlayer2TS.setScale(1.7);
 

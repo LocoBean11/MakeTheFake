@@ -348,7 +348,7 @@ class DigChampsLevel1 extends Phaser.Scene{
 
      // Set up collision between player and cave
      this.physics.add.collider(this.DigChampsP1V2, this.CaveOpening, null, this);
-
+        /*
        const numberOfEnemies = 3;
        const minX = 300;
        const maxX = 1000;
@@ -388,7 +388,7 @@ class DigChampsLevel1 extends Phaser.Scene{
                }
             }
         }//End of randomly spawning enemies
-
+*/
         // Store the tilemap for later use
         this.tilemap = map;
 
@@ -476,7 +476,8 @@ class DigChampsLevel1 extends Phaser.Scene{
         //Initialize the score
        // let score = 0;
 
-        this.scoreText = this.add.text(16, 16, '0', { fontSize: '32px', fill: '#74f059' });
+        this.scoreText = this.add.text(16, 16, '0000', { fontSize: '50px', fontFamily: 'Roboto Mono', fill: '#74f059' });
+        
         /*
         //Display score
         let scoreConfig = {
@@ -513,14 +514,20 @@ class DigChampsLevel1 extends Phaser.Scene{
     update(){
         this.demonFollows();
         //this.direction = new Phaser.Math.Vector2(0)
-        
+
+        // Adjust the score text position based on the camera's scroll position
+        this.scoreText.x = this.cameras.main.scrollX + 16;
+        this.scoreText.y = this.cameras.main.scrollY + 16;
+
         // Player movement logic
         if (this.allowPlayerMovement) {
         
         const speed = 430;
-
+    
+        //Checks to make sure Player is alive
         if(this.DigChampsP1V2Alive){
 
+            //Left key
         if (this.cursors.left.isDown && !this.physics.overlap(this.DigChampsP1V2, this.InvisibleBarrier)) {
             this.DigChampsP1V2.setVelocityX(-speed);
             this.DigChampsP1V2.setFlipX(true); // Flip the sprite on the x-axis
@@ -539,6 +546,7 @@ class DigChampsLevel1 extends Phaser.Scene{
          this.cameras.main.scrollX -= speed * this.game.loop.delta / 1000;
          console.log('Player position:', this.DigChampsP1V2.x, this.DigChampsP1V2.y);
 
+         //Right key
     } else if (this.cursors.right.isDown) {
         this.DigChampsP1V2.setVelocityX(speed);
         this.DigChampsP1V2.setFlipX(false); // Reset the flip
@@ -555,9 +563,10 @@ class DigChampsLevel1 extends Phaser.Scene{
 
         this.cameras.main.scrollX += speed * this.game.loop.delta / 1000;
         
+        //Idle
     } else {
         this.DigChampsP1V2.setVelocityX(0);
-        this.DigChampsP1V2.anims.play('Idle');
+        //this.DigChampsP1V2.anims.play('Idle');
 
         if(this.LivesRemaining > 1 && this.LivesRemaining <= 3 ){
             this.P1LifeIcon.setVelocityX(0); //Icon follows the player
@@ -577,6 +586,7 @@ class DigChampsLevel1 extends Phaser.Scene{
        this.DigChampsP1Jump.setVolume(0.12);
         }
     }
+    //Attack/dig
     if (this.cursors.space.isDown && (this.DigChampsP1V2.body.onFloor() || this.physics.overlap(this.DigChampsP1V2, this.Block))) {
         this.DigChampsP1V2.body.setSize(120, 92);
        // this.DigChampsP1V2.body.setframeWidth(120); //Doesn't work
@@ -587,13 +597,11 @@ class DigChampsLevel1 extends Phaser.Scene{
        //this.DigChampsP1V2.body.setFrameWidth(87);
         //this.DigChampsP1V2.body.setFrameHeight(92);
         
-
         // Check for enemies near the player
       //  this.checkForEnemyDestroy();
         
     }//End of if statment
     
-
 }//End of Player movement logic
 
     // Basic collision check
@@ -653,7 +661,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.DigChampsTool.setVolume(0.1);
         this.destroySnail();
         // Example: Increase the score by 10
-        increaseScore(10);
+        this.increaseScore(10);
     }
         //Check if player is colliding with snail
     const isPlayerCollidingWithWorm = this.physics.collide(this.DigChampsP1V2, this.Worm);
@@ -663,6 +671,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.DigChampsTool.play();
         this.DigChampsTool.setVolume(0.1);
         this.destroyWorm();
+        this.increaseScore(20);
     }
 
      //Check if player is colliding with demon
@@ -673,6 +682,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.DigChampsTool.play();
         this.DigChampsTool.setVolume(0.1);
          this.destroyDemonSS();
+         this.increaseScore(30);
      }
      
       // Check for victory
@@ -682,11 +692,6 @@ class DigChampsLevel1 extends Phaser.Scene{
     
     }//End of update method
     
-    //changeFrame() {
-
-    //    this.DigChampsP1V2.frameName = 'Dig';
-    
-   // }
    // }
    // handleBackgroundLoop() {
      //   if (this.cameras.main.scrollX < 0) {
@@ -802,9 +807,10 @@ class DigChampsLevel1 extends Phaser.Scene{
     this.scene.start("digchampslevel1Scene"); 
     
     }//End of restartGame
-    increaseScore() {
-        this.score += this.points;
-        this.scoreText.setText('0' + this.score);
+    increaseScore(points) {
+        this.score += points;
+        this.scoreText.setText('00' + this.score);
+        
     }
         // Add this method to your class
     winGame() {

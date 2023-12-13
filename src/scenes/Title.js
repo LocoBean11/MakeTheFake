@@ -37,18 +37,34 @@ class Title extends Phaser.Scene {
         frameHeight: 29
     })
 
-      // Load audio based on object properties in the tilemap
-  this.load.path = './assets/audio/';
-  this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
-  this.load.audio('SoundEffect', 'DigChampsSelectSfx.wav');
+      // Load audio 
+      this.load.path = './assets/audio/';
+      this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
+      this.load.audio('SoundEffect', 'DigChampsSelectSfx.wav');
   
   }//End of preload
 
 create() {
   this.DigChampsTitleBG = this.add.sprite(370, 240, 'TitleBG', 0);
 
-  //Add the players that appear on title screen
+  //Sounds and looping BGM
+  this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
 
+  // Set the loop point (time in seconds)
+    const loopStartPoint = 5; // Adjust this value to your desired loop point
+    this.DigChampsMusic.addMarker({
+    name: 'loop',
+    start: loopStartPoint,
+    duration: this.DigChampsMusic.duration - loopStartPoint,
+    config: {
+        loop: true
+      }
+    });
+    this.DigChampsMusic.play();
+    this.DigChampsMusic.setVolume(0.2);
+    this.DigChampsSelectSfx = this.sound.add('SoundEffect', { loop: false });
+  
+  //Add the players that appear on title screen
   this.DigChampsPlayerTS = this.physics.add.sprite(250, 315, 'Player1TS', 0);
   // this.DigChampsPlayerTS.body.setCollideWorldBounds(true);
    this.DigChampsPlayerTS.setScale(1.7);
@@ -130,12 +146,6 @@ create() {
 
   this.WormTS = this.add.sprite(100, 330, 'WormTS', 0);
   this.WormTS.setScale(0.8);
-
-  //Sounds and looping BGM
-  this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
-  this.DigChampsSelectSfx = this.sound.add('SoundEffect', { loop: false });
-  this.DigChampsMusic.play();
-  this.DigChampsMusic.setVolume(0.2);
 
   const titleText = this.add.text(360, 150, "DIG CHAMPS");
   //titleText.fontFamily = 'Times New Roman';

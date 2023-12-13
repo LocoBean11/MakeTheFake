@@ -1,7 +1,10 @@
 class DigChampsLevel1 extends Phaser.Scene{
     constructor() {
         super("digchampslevel1Scene");
+        // Initialize score property
+        this.score = 0;
     }
+    
 
     preload() {
         this.load.path = './assets/';
@@ -44,6 +47,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.load.audio('Hit', 'DCGameOverSE.wav');
         this.load.audio('Jingle', 'DCGameOverJingle.wav');
         this.load.audio('Jump', 'DigChampsP1Jump.wav');
+        this.load.audio('ToolSwing', 'DigChampsTool.wav');
 
         }//End of preload
 
@@ -63,13 +67,14 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.VEL = 100;
 
         //Game win constant
-        this.winPointX = 8000; 
+        this.winPointX = 6000; 
 
         //Sounds and looping BGM
         this.DigChampsMusic = this.sound.add('DigChampsBGM');
         this.DCGameOverSE = this.sound.add('Hit');
         this.DCGameOverJingle = this.sound.add('Jingle');
         this.DigChampsP1Jump = this.sound.add('Jump');
+        this.DigChampsTool = this.sound.add('ToolSwing');
         
         //Tilemap info
         const map = this.add.tilemap('DigChampsLevel1JSON');
@@ -118,6 +123,8 @@ class DigChampsLevel1 extends Phaser.Scene{
       // Create idle animation for Player
       this.anims.create({
         key: 'Idle',
+        frameWidth: 87,
+        frameHeight: 92,
         frameRate: 1,
         frames: this.anims.generateFrameNumbers('Player1', {
         start: 0,
@@ -140,7 +147,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         //Create digging animation for Player
         this.anims.create({
             key: 'Dig',
-            frameWidth: 120,
+            frameWidth: 160,
             frameHeight: 92,
             frameRate: 15,
             frames: this.anims.generateFrameNumbers('Player1', {
@@ -148,11 +155,13 @@ class DigChampsLevel1 extends Phaser.Scene{
             end: 5,
             repeat: 1,
             onComplete: function () {
-              this.DigChampsP1V2.anims.stop('Dig', false);
-              this.DigChampsP1V2.anims.play('Walk', true);
+              this.DigChampsP1V2.anims.stop('Dig', true);
+              this.DigChampsP1V2.anims.play('Idle', true);
+              this.DigChampsP1V2.setFrame(0);
             },
             callbackScope: this,
             }),
+            
         });
 
         // Create death flash animation for Player
@@ -321,7 +330,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.physics.world.bounds.height = groundLayer.height;
 
       //this.physics.world.bounds.width = this.Block.width; //Possible solution to be able to stand on block
-      this.CaveOpening = this.physics.add.sprite(8400, 132, 'Cave', 0);
+      this.CaveOpening = this.physics.add.sprite(6440, 132, 'Cave', 0);
       // this.DigChampsP1V2.body.setCollideWorldBounds(true);
       this.CaveOpening.setScale(1.2);
 
@@ -465,8 +474,10 @@ class DigChampsLevel1 extends Phaser.Scene{
         updateLifeIcons.call(this);
       
         //Initialize the score
-        this.p1Score = 0;
+       // let score = 0;
 
+        this.scoreText = this.add.text(16, 16, '0', { fontSize: '32px', fill: '#74f059' });
+        /*
         //Display score
         let scoreConfig = {
             fontFamily: 'Roboto Mono',
@@ -477,7 +488,7 @@ class DigChampsLevel1 extends Phaser.Scene{
             }
 
         this.scoreLeft = this.add.text(this.backgroundWidth, this.backgroundHeight, this.p1Score, scoreConfig);
-
+            */
         //Enemy Collision flag
         this.EnemyCollision = false;
 
@@ -546,7 +557,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         
     } else {
         this.DigChampsP1V2.setVelocityX(0);
-      //  this.DigChampsP1V2.anims.play('Idle');
+        this.DigChampsP1V2.anims.play('Idle');
 
         if(this.LivesRemaining > 1 && this.LivesRemaining <= 3 ){
             this.P1LifeIcon.setVelocityX(0); //Icon follows the player
@@ -561,23 +572,27 @@ class DigChampsLevel1 extends Phaser.Scene{
     //Jumping logic
     if (this.cursors.up.isDown) { 
         if(this.DigChampsP1V2.body.onFloor() || this.physics.overlap(this.DigChampsP1V2, this.Block)) {
-       // this.DigChampsP1V2.anims.play('Idle');
+        this.DigChampsP1V2.body.setVelocityY(-500);
        this.DigChampsP1Jump.play();
-        //this.DigChampsP1V2.anims.play('Idle');
+       this.DigChampsP1Jump.setVolume(0.12);
         }
     }
     if (this.cursors.space.isDown && (this.DigChampsP1V2.body.onFloor() || this.physics.overlap(this.DigChampsP1V2, this.Block))) {
         this.DigChampsP1V2.body.setSize(120, 92);
+       // this.DigChampsP1V2.body.setframeWidth(120); //Doesn't work
+        //this.DigChampsP1V2.body.setframeHeight(92); //Doesn't work
+        this.DigChampsP1V2.setOrigin(0.5, 0.5);
         this.DigChampsP1V2.anims.play('Dig');
-
+       // game.cursors.space.isDown.add(this.changeFrame);
        //this.DigChampsP1V2.body.setFrameWidth(87);
         //this.DigChampsP1V2.body.setFrameHeight(92);
-        this.DigChampsP1V2.setOrigin(0.5, 0.5);
+        
 
         // Check for enemies near the player
       //  this.checkForEnemyDestroy();
         
     }//End of if statment
+    
 
 }//End of Player movement logic
 
@@ -625,6 +640,8 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     // If player is colliding with the block and space is pressed, destroy the block
     if (isPlayerCollidingWithBlock && this.cursors.space.isDown) {
+        this.DigChampsTool.play();
+        this.DigChampsTool.setVolume(0.1);
         this.destroyBlock();
     }
     //Check if player is colliding with snail
@@ -632,13 +649,19 @@ class DigChampsLevel1 extends Phaser.Scene{
     
     // If player is colliding with the snail and space is pressed, destroy the snail
     if (isPlayerCollidingWithSnail && this.cursors.space.isDown) {
+        this.DigChampsTool.play();
+        this.DigChampsTool.setVolume(0.1);
         this.destroySnail();
+        // Example: Increase the score by 10
+        increaseScore(10);
     }
         //Check if player is colliding with snail
     const isPlayerCollidingWithWorm = this.physics.collide(this.DigChampsP1V2, this.Worm);
     
     // If player is colliding with the worm and space is pressed, destroy the worm
     if (isPlayerCollidingWithWorm && this.cursors.space.isDown) {
+        this.DigChampsTool.play();
+        this.DigChampsTool.setVolume(0.1);
         this.destroyWorm();
     }
 
@@ -647,6 +670,8 @@ class DigChampsLevel1 extends Phaser.Scene{
     
      // If player is colliding with the demon and space is pressed, destroy the demon
      if (isPlayerCollidingWithDemonSS && this.cursors.space.isDown) {
+        this.DigChampsTool.play();
+        this.DigChampsTool.setVolume(0.1);
          this.destroyDemonSS();
      }
      
@@ -654,9 +679,14 @@ class DigChampsLevel1 extends Phaser.Scene{
     if (this.DigChampsP1V2.x >= this.winPointX) {
         this.winGame();
     }
-
+    
     }//End of update method
     
+    //changeFrame() {
+
+    //    this.DigChampsP1V2.frameName = 'Dig';
+    
+   // }
    // }
    // handleBackgroundLoop() {
      //   if (this.cameras.main.scrollX < 0) {
@@ -772,7 +802,10 @@ class DigChampsLevel1 extends Phaser.Scene{
     this.scene.start("digchampslevel1Scene"); 
     
     }//End of restartGame
-
+    increaseScore() {
+        this.score += this.points;
+        this.scoreText.setText('0' + this.score);
+    }
         // Add this method to your class
     winGame() {
         // Stop any game-related activities (animations, movement, etc.)

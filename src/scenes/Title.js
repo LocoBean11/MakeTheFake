@@ -80,7 +80,7 @@ create() {
    this.DigChampsPlayerTS.setMaxVelocity(600, 0);
 
 
-   this.DigChampsPlayer2TS = this.physics.add.sprite(490, 320, 'Player2TS', 0);
+   this.DigChampsPlayer2TS = this.physics.add.sprite(490, 325, 'Player2TS', 0);
   // this.DigChampsP1V2.body.setCollideWorldBounds(true);
    this.DigChampsPlayer2TS.setScale(1.7);
 

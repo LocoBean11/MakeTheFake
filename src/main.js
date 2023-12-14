@@ -1,6 +1,6 @@
 //Aaron Rodriguez
 //Game Title: Dig Champs
-//Phaser 3 components used: Physics system, text objects, animation manager, tween manager, 
+//Phaser 3 components used: Physics system, text objects, animation manager, tween manager, timers and tilemaps
 
 let config = {
     type: Phaser.AUTO,

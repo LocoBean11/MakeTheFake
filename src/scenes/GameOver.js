@@ -33,13 +33,9 @@ create() {
     // Add Press Space text
     this.GameOverText = this.add.sprite(360, 220, 'GameOverText');
     this.GameOverText.setScale(1.6);
-/*
-    const gameOverText = this.add.text(320, 100, "GAME OVER");
-    gameOverText.setFontSize(48); // Set the desired font size
-    gameOverText.setOrigin(0.5, 0.5); // Center the text
-*/
-    //this.add.text(240, 150, "Your score was \n       " + this.P1score);
-    //this.add.text(170, 200, "Press SPACE arrow key to restart");
+
+    //this.add.text(360, 350, "Your score was \n       " + this.score);
+    //this.add.text(170, 400, "Press SPACE arrow key to restart");
     //this.add.text(100, 250, "Press DOWN arrow key to return to Title Screen");
 
      //Create cursor keys

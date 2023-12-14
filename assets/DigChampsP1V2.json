@@ -1,0 +1,41 @@
+{
+	"textures": [
+		{
+			"image": "DigChampsP1V2.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 556,
+				"h": 92
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "DigChampsP1V2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 556,
+						"h": 92
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 556,
+						"h": 92
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 556,
+						"h": 92
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:c4fe891e999bf6887b4b9a7b1feea64d:d3c5721c3e7ee917d4caeeaf5dc7ee55:9f6d2f6b5d3bc9ca526e561f12f49bb2$"
+	}
+}

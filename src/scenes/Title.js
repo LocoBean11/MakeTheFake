@@ -3,7 +3,6 @@ class Title extends Phaser.Scene {
         super("titleScene");
     }
 
-
     preload() {
       this.load.path = './assets/';
 
@@ -61,7 +60,7 @@ create() {
   this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
 
   // Set the loop point (time in seconds)
-    const loopStartPoint = 5; // Adjust this value to your desired loop point
+    const loopStartPoint = 5; 
     this.DigChampsMusic.addMarker({
     name: 'loop',
     start: loopStartPoint,
@@ -79,8 +78,6 @@ create() {
   // this.DigChampsPlayerTS.body.setCollideWorldBounds(true);
    this.DigChampsPlayerTS.setScale(1.7);
 
-   //Set up other properties for the player
-
    this.physics.world.enable(this.DigChampsPlayerTS);
    // Set player physics body size in pixels
    this.DigChampsPlayerTS.body.setSize(110, 110); 
@@ -89,12 +86,8 @@ create() {
    this.DigChampsPlayerTS.setImmovable();
    this.DigChampsPlayerTS.setMaxVelocity(600, 0);
 
-
    this.DigChampsPlayer2TS = this.physics.add.sprite(490, 325, 'Player2TS', 0);
-  // this.DigChampsP1V2.body.setCollideWorldBounds(true);
    this.DigChampsPlayer2TS.setScale(1.7);
-
-   //Set up other properties for the player
 
    this.physics.world.enable(this.DigChampsPlayer2TS);
    // Set player physics body size in pixels
@@ -157,16 +150,11 @@ create() {
   this.WormTS = this.add.sprite(100, 330, 'WormTS', 0);
   this.WormTS.setScale(0.8);
 
-  //const titleText = this.add.text(360, 150, "DIG CHAMPS");
-  //titleText.fontFamily = 'Times New Roman';
- // titleText.setFontSize(20); 
- // titleText.setOrigin(0.5, 0.5); // Center the text
-
   // Add Press Space text
   this.SpaceButtonText = this.add.sprite(365, 430, 'PressSpace');
   this.SpaceButtonText.setScale(1.4);
 
-  // Define spaceButtonTween in the outer scope
+  // Define spaceButtonTween 
   let spaceButtonTween;
 
    // Function to restart the tween
@@ -186,13 +174,6 @@ create() {
 
   // Set up a delayed call to restart the tween after a certain time
   this.time.delayedCall(3000, restartTween);
-
-   // Set up a delayed call to restart the tween after a certain time
-   //this.time.delayedCall(4000, () => {
-  //  spaceButtonTween.restart();
-  //});
-  
-  //End of SpaceTextButton tween
   
       //Define cursor keys
       this.cursors = this.input.keyboard.createCursorKeys();
@@ -201,12 +182,10 @@ create() {
       update() {
         
       if (this.cursors.space.isDown) {
-        //this.sound.play('select', { volume: 0.2 }); 
         this.scene.start("digchampslevel1Scene"); 
         this.DigChampsSelectSfx.play();
       }
      
-      
   }//End of update
 
 }//end of class

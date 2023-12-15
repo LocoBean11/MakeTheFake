@@ -21,7 +21,9 @@ class WinScreen extends Phaser.Scene {
     this.YouWinText = this.add.sprite(360, 150, 'YouWin');
     this.YouWinText.setScale(1.4);
 
-        //Sounds and looping BGM
+    this.add.text(250, 400, "Press SPACE key to \n return to title screen");
+
+    //Sounds and looping BGM
     this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
     this.DigChampsMusic.stop();
 
@@ -35,12 +37,10 @@ class WinScreen extends Phaser.Scene {
     this.time.delayedCall(4000, () => { 
         this.scene.start("titleScene"); 
     });
-    if (this.cursors.space.isDown) {
-        //this.sound.play('select', { volume: 0.2 }); 
+
+    if (this.cursors.space.isDown) { 
         this.scene.start("titleScene"); 
-       // this.DigChampsSelectSfx.play();
       }
-     
-        
     }
+    
 }//End of Winscreen class

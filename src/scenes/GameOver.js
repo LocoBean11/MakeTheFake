@@ -34,9 +34,8 @@ create() {
     this.GameOverText = this.add.sprite(360, 220, 'GameOverText');
     this.GameOverText.setScale(1.6);
 
-    //this.add.text(360, 350, "Your score was \n       " + this.score);
-    //this.add.text(170, 400, "Press SPACE arrow key to restart");
-    //this.add.text(100, 250, "Press DOWN arrow key to return to Title Screen");
+    this.add.text(360, 250, "Your score was \n       " + this.score);
+    this.add.text(250, 400, "Press SPACE arrow key to \n return to title screen");
 
      //Create cursor keys
      this.cursors = this.input.keyboard.createCursorKeys();
@@ -45,11 +44,10 @@ create() {
 
   update() {
     this.sound.removeByKey('DigChampsBGM'); // This worked!!!
-    this.time.delayedCall(4000, () => { 
+    if(this.cursors.space.isDown){
         this.scene.start("titleScene");
-     
-        
-    });
+    }
+
     
   }//End of update
 

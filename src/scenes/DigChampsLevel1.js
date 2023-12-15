@@ -63,8 +63,10 @@ class DigChampsLevel1 extends Phaser.Scene{
    // }
 
     demonFollows() {
-        this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2, 100);
-
+        //Check if Demon exists
+        if (this.DemonSS && this.DemonSS.active) {
+            this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2, 200);
+        }
     }
 
     create() {
@@ -73,7 +75,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.VEL = 100;
 
         //Game win constant
-        this.winPointX = 6000; 
+        this.winPointX = 4000; 
 
         //Sounds and looping BGM
         this.DigChampsMusic = this.sound.add('DigChampsBGM');
@@ -194,13 +196,13 @@ class DigChampsLevel1 extends Phaser.Scene{
         //End of Player animations
 
         //Add Block
-        this.Block = this.physics.add.sprite(1500, 317, 'Block', 0);
+        this.Block = this.physics.add.sprite(2100, 317, 'Block', 0);
         this.Block.setScale(1);
 
         this.physics.world.enable(this.Block);
-        this.Block.setImmovable(true);
+        this.Block.setImmovable();
         // Set Block physics body size
-        this.Block.body.setSize(80, 72);
+        this.Block.body.setSize(79, 71);
          // Set Block origin to the center
          this.Block.setOrigin(0.5, 0.5);
         //this.Block.setVelocityX(100, 0);
@@ -235,7 +237,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         //Snail moves so slowly it's more of an obstacle than an enemy, only needs collision with player
 
         //Add Worm enemy
-        this.Worm = this.physics.add.sprite(3000, 340, 'Worm', 0); 
+        this.Worm = this.physics.add.sprite(2000, 340, 'Worm', 0); 
         //The Worm's placement on the Y-axis is intentional to make it seem as if it is burrowing through the ground
         //this.Worm.body.setCollideWorldBounds(true);
         this.Worm.setScale(0.9);
@@ -260,19 +262,18 @@ class DigChampsLevel1 extends Phaser.Scene{
        this.physics.world.enable([this.Snail, this.Worm]);
 
        // Set up collision between Snail and Worm
-       this.physics.add.collider(this.Snail, this.Worm, this.handleBlockCollision, null, this);
+       this.physics.add.collider(this.Snail, this.Worm, this.handleEnemyCollision, null, this);
 
-       //Collision between Blcok and Worm
-       this.physics.world.enable([this.Block, this.Worm]);
+       //Collision between Worm and Block
+       this.physics.world.enable([this.Worm, this.Block]);
 
-       // Set up collision between Block and Worm
-       this.physics.add.collider(this.Block, this.Worm, this.handleBlockCollision, null, this);
+       // Set up collision between Worm and Block
+       this.physics.add.collider(this.Worm, this.Block, this.handleBlockCollision, null, this);
 
         //Add Demon enemy
-        this.DemonSS = this.physics.add.sprite(6000, 280, 'Demon', 100);
+        this.DemonSS = this.physics.add.sprite(4000, 280, 'Demon', 100);
         //this.Demon.body.setCollideWorldBounds(true);
         this.DemonSS.setScale(0.9);
-        //this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2);
 
         this.physics.world.enable(this.DemonSS);
         // Set Demon physics body size
@@ -286,15 +287,15 @@ class DigChampsLevel1 extends Phaser.Scene{
        //this.DemonSS.setDragY(200);
 
        //Collision between Player and Demon
-      // this.physics.world.enable([this.DigChampsP1V2, this.DemonSS]);
+       this.physics.world.enable([this.DigChampsP1V2, this.DemonSS]);
 
         // Set up collision between player and demon
-       // this.physics.add.collider(this.DigChampsP1V2, this.DemonSS, this.handleCollision, null, this);
+        this.physics.add.collider(this.DigChampsP1V2, this.DemonSS, this.handleCollision, null, this);
 
         //Collision between Snail and Demon
        this.physics.world.enable([this.Snail, this.DemonSS]);
 
-       // Set up collision between Worm and Demon
+       // Set up collision between Snail and Demon
        this.physics.add.collider(this.Snail, this.DemonSS, this.handleEnemyCollision, null, this);
 
         //Collision between Worm and Demon
@@ -336,7 +337,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.physics.world.bounds.height = groundLayer.height;
 
       //this.physics.world.bounds.width = this.Block.width; //Possible solution to be able to stand on block
-      this.CaveOpening = this.physics.add.sprite(6440, 132, 'Cave', 0);
+      this.CaveOpening = this.physics.add.sprite(4440, 132, 'Cave', 0);
       // this.DigChampsP1V2.body.setCollideWorldBounds(true);
       this.CaveOpening.setScale(1.2);
 
@@ -440,7 +441,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.P1LifeIcon2 = this.physics.add.sprite(180, 430, 'LifeIcon', 0);
         //this.Demon.body.setCollideWorldBounds(true);
         this.P1LifeIcon2.setScale(0.5);
-        //this.physics.moveToObject(this.DemonSS, this.DigChampsP1V2);
 
         this.physics.world.enable(this.P1LifeIcon2);
         // Set P1LifeIcon physics body size
@@ -577,37 +577,30 @@ class DigChampsLevel1 extends Phaser.Scene{
        this.DigChampsP1Jump.setVolume(0.12);
         }
     }
+
     //Attack/dig
     if (this.cursors.space.isDown && (this.DigChampsP1V2.body.onFloor() || this.physics.overlap(this.DigChampsP1V2, this.Block))) {
         this.DigChampsP1V2.body.setSize(120, 92);
-       // this.DigChampsP1V2.body.setframeWidth(120); //Doesn't work
-        //this.DigChampsP1V2.body.setframeHeight(92); //Doesn't work
         this.DigChampsP1V2.setOrigin(0.5, 0.5);
         this.DigChampsP1V2.anims.play('Dig');  
     }//End of if statment
     
 }//End of Player movement logic
 
-    // Basic collision check
-    if (Phaser.Geom.Intersects.RectangleToRectangle(this.DigChampsP1V2.getBounds(), this.Snail.getBounds())) {
-        // this.sound.play('hitHurt', { volume: 0.2 });
-    }
-
     // Snail movement
     this.Snail.x -= 0.01;
+
     if(!this.EnemyCollision){
+        if(!this.BlockCollision){
         this.Worm.x -= 3;
+       }
     }
-    if(!this.BlockCollision){
-        this.Worm.x -= 3;
-    }
+    
     else {
         this.Worm.x += 3;
     }
-    
+
         //this.direction.normalize();
-        //this.DigChampsP1Single.update();
-        //this.Snail.update();
     
 }//End of PlayerAllowedMovement
 
@@ -620,14 +613,16 @@ class DigChampsLevel1 extends Phaser.Scene{
     //this.P1LifeIcon.setVelocityX(0);
     //this.P1LifeIcon2.setVelocityX(0);
     // Update the camera's scroll position based on the player's position
-    this.cameras.main.scrollX = this.DigChampsP1V2.x - this.cameras.main.width / 4.5;
+    this.cameras.main.scrollX = this.DigChampsP1V2.x - this.cameras.main.width / 4;
     }
 
-    // Example code to handle player standing on the block
+    //Player standing on the block
     if (this.DigChampsP1V2.body.onFloor() && Phaser.Geom.Intersects.RectangleToRectangle(
         this.DigChampsP1V2.getBounds(), this.Block.getBounds())) 
         {
         this.DigChampsP1V2.setVelocityY(0); // Stop vertical movement
+        //this.P1LifeIcon.setVelocityX(0);
+        //this.P1LifeIcon2.setVelocityX(0);
         }
 
     // If player is colliding with the block and space is pressed, destroy the block
@@ -647,7 +642,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         // Example: Increase the score by 10
         this.increaseScore(10);
     }
-        //Check if player is colliding with snail
+        //Check if player is colliding with worm
     const isPlayerCollidingWithWorm = this.physics.collide(this.DigChampsP1V2, this.Worm);
     
     // If player is colliding with the worm and space is pressed, destroy the worm
@@ -666,8 +661,18 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.DigChampsTool.play();
         this.DigChampsTool.setVolume(0.1);
          this.destroyDemonSS();
-         this.increaseScore(30);
+         this.increaseScore(50);
      }
+
+     // Check for collision between Worm and Block
+    const isWormCollidingWithBlock = this.physics.collide(this.Worm, this.Block);
+
+    // If Worm is colliding with the Block, reverse its direction
+    if (isWormCollidingWithBlock) {
+        // Reverse the Worm's direction
+        this.Worm.setVelocityX(-this.Worm.body.velocity.x);
+       this.Worm.x -= 3;
+    }
      
       // Check for victory
     if (this.DigChampsP1V2.x >= this.winPointX) {
@@ -675,15 +680,6 @@ class DigChampsLevel1 extends Phaser.Scene{
     }
     
     }//End of update method
-    
-   // }
-   // handleBackgroundLoop() {
-     //   if (this.cameras.main.scrollX < 0) {
-      //      this.cameras.main.scrollX = this.backgroundWidth;
-       // } else if (this.cameras.main.scrollX > this.backgroundWidth) {
-       //     this.cameras.main.scrollX = 0;
-       // }
-    //}
     
     // Callback function for collision between player and enemies
     handleCollision() {
@@ -702,6 +698,11 @@ class DigChampsLevel1 extends Phaser.Scene{
     
             this.P1LifeIcon2.destroy();
             this.P1LifeIcon.x = 120;
+
+            // Respawn the player to the left
+        this.DigChampsP1V2.x -= 20; // Adjust the respawn position as needed
+        this.DigChampsP1V2.y = 250; // Set the respawn Y position
+        this.DigChampsP1V2.setVelocity(0, 0); // Reset the player's velocity
         }
 
         if(this.LivesRemaining == 2){
@@ -715,7 +716,6 @@ class DigChampsLevel1 extends Phaser.Scene{
             
             //this.sound.play('gameover', { volume: 0.2 }); 
             //this.DigChampsP1V2.destroy();
-           // this.DigChampsP1V2.setAlpha(0);
             this.DigChampsP1V2.x = 100;
             this.DigChampsP1V2.y = 250;
             this.DigChampsP1V2.setVelocityX(0);
@@ -738,7 +738,7 @@ class DigChampsLevel1 extends Phaser.Scene{
            // this.scene.physics.world.pause(); //Cannot read properties of undefined - Why does world not work???
            this.DCGameOverJingle.play();
            // });
-           this.scene.start("gameoverScene", { score: this.score });
+           this.scene.start("gameoverScene", { score: this.score }); 
         
     }//End of if statement
 
@@ -746,36 +746,32 @@ class DigChampsLevel1 extends Phaser.Scene{
 
     // Callback function for collision between enemies
     handleEnemyCollision() {
-        this.Worm.setFlipX(true); // Flip the sprite on the x-axix
+        this.Worm.setFlipX(true); // Flip the sprite on the x-axis
+       // this.DemonSS.setFlipX(true);
         this.EnemyCollision = !this.EnemyCollision;
     }//End of Enemy Collision
 
-     // Callback function for collision between block and sprites
+     // Callback function for collision between block and worm
      handleBlockCollision() {
-        this.Worm.setFlipX(true); // Flip the sprite on the x-axix
+       this.Worm.setFlipX(true);
         this.BlockCollision = !this.BlockCollision;
-    }//End of Block Collision
+   }//End of Block Collision
 
     destroyBlock() {
-    // For example, playing a sound or adding score points
     this.Block.destroy();
     }//End of destroyBlock method
 
     destroySnail() {
-        // For example, playing a sound or adding score points
         this.Snail.destroy();
         }//End of destroySnail method
 
-        destroyWorm() {
-            // For example, playing a sound or adding score points
+        destroyWorm() { 
             this.Worm.destroy();
             }//End of destroyWorm method
-            destroyDemonSS() {
-                // For example, playing a sound or adding score points
-                this.DemonSS.destroy();
-                }//End of destroyDemonSS method
-
-     // Resets the game if the player loses a life
+            
+        destroyDemonSS() {
+            this.DemonSS.destroy();
+             }//End of destroyDemonSS method
      
     // Function called when the player hits a hazard
     playerHit(DigChampsP1V2, Snail) {
@@ -809,7 +805,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.scoreText.setText('00' + this.score);
         
     }
-        // Add this method to your class
+        //Win game condition
     winGame() {
         // Play victory sound
         this.DigChampsLevelClear.play();
@@ -819,7 +815,6 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.P1LifeIcon.setVelocityX(0);
         this.P1LifeIcon2.setVelocityX(0);
         
-
         // Transition to the next scene after a delay
         this.time.delayedCall(2000, () => {
             this.scene.start("winscreenScene");

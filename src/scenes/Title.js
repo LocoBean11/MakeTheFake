@@ -7,6 +7,11 @@ class Title extends Phaser.Scene {
     preload() {
       this.load.path = './assets/';
 
+      this.load.spritesheet('Logo', 'DigChampsLogo.png', {
+        frameWidth: 228,
+        frameHeight: 41
+    })
+
       this.load.spritesheet('TitleBG', 'DigChampsTitleBG.png', {
         frameWidth: 740,
         frameHeight: 480
@@ -45,7 +50,12 @@ class Title extends Phaser.Scene {
   }//End of preload
 
 create() {
+  //Add background
   this.DigChampsTitleBG = this.add.sprite(370, 240, 'TitleBG', 0);
+
+  // Add Logo
+  this.DigChampsLogo = this.add.sprite(370, 130, 'Logo', 0);
+  this.DigChampsLogo.setScale(2.7);
 
   //Sounds and looping BGM
   this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
@@ -147,10 +157,10 @@ create() {
   this.WormTS = this.add.sprite(100, 330, 'WormTS', 0);
   this.WormTS.setScale(0.8);
 
-  const titleText = this.add.text(360, 150, "DIG CHAMPS");
+  //const titleText = this.add.text(360, 150, "DIG CHAMPS");
   //titleText.fontFamily = 'Times New Roman';
-  titleText.setFontSize(20); 
-  titleText.setOrigin(0.5, 0.5); // Center the text
+ // titleText.setFontSize(20); 
+ // titleText.setOrigin(0.5, 0.5); // Center the text
 
   // Add Press Space text
   this.SpaceButtonText = this.add.sprite(365, 430, 'PressSpace');

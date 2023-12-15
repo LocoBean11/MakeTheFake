@@ -1,6 +1,7 @@
 //Aaron Rodriguez
 //Game Title: Dig Champs
 //Phaser 3 components used: Physics system, text objects, animation manager, tween manager, timers and tilemaps
+//Grader mode/Debug mode: Please turn on debug mode if the game happens to be too difficult
 
 let config = {
     type: Phaser.AUTO,

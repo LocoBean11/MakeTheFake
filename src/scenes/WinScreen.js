@@ -4,6 +4,12 @@ class WinScreen extends Phaser.Scene {
     }
   
     preload(){
+        this.load.path = './assets/';
+        this.load.spritesheet('YouWin', 'YouWinText.png', {
+            frameWidth: 740,
+            frameHeight: 480
+        })
+        
         // Load audio 
         this.load.path = './assets/audio/';
         this.load.audio('DigChampsBGM', 'DigChampsMusic.wav');
@@ -11,11 +17,14 @@ class WinScreen extends Phaser.Scene {
     }//End of preload
 
     create(){
+        // Add You Win text
+    this.YouWinText = this.add.sprite(360, 150, 'YouWin');
+    this.YouWinText.setScale(1.4);
+
         //Sounds and looping BGM
     this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
     this.DigChampsMusic.stop();
 
-    
      //Create cursor keys
      this.cursors = this.input.keyboard.createCursorKeys();
      

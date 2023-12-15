@@ -56,6 +56,8 @@ create() {
   this.DigChampsLogo = this.add.sprite(370, 130, 'Logo', 0);
   this.DigChampsLogo.setScale(2.7);
 
+  this.add.text(400, 460, "Press UP arrow key to view Credits");
+
   //Sounds and looping BGM
   this.DigChampsMusic = this.sound.add('DigChampsBGM', { loop: true });
 
@@ -183,6 +185,10 @@ create() {
         
       if (this.cursors.space.isDown) {
         this.scene.start("digchampslevel1Scene"); 
+        this.DigChampsSelectSfx.play();
+      }
+      if(this.cursors.up.isDown){
+        this.scene.start("creditsScene");
         this.DigChampsSelectSfx.play();
       }
      

@@ -21,7 +21,7 @@ physics: {
     }
 },
 //zoom: 2,
-scene: [ Title, DigChampsLevel1, GameOver, WinScreen]
+scene: [ Title, DigChampsLevel1, GameOver, WinScreen, Credits]
 }
 
     //define game

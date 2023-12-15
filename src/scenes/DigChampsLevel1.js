@@ -669,7 +669,7 @@ class DigChampsLevel1 extends Phaser.Scene{
         this.allowPlayerMovement = false;
         this.DigChampsP1V2.setVelocity(0);
         this.P1LifeIcon.setVelocityX(0);
-        this.P1LifeIcon2.setVelocityX(0);
+       // this.P1LifeIcon2.setVelocityX(0);
         
         // Transition to the next scene after a delay
         this.time.delayedCall(1000, () => {

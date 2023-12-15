@@ -34,13 +34,9 @@ class WinScreen extends Phaser.Scene {
 
     update(){
         this.sound.removeByKey('DigChampsBGM'); 
-    this.time.delayedCall(4000, () => { 
-        this.scene.start("titleScene"); 
-    });
-
     if (this.cursors.space.isDown) { 
         this.scene.start("titleScene"); 
       }
     }
-    
+
 }//End of Winscreen class
